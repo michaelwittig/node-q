@@ -4,13 +4,17 @@ Q interfacing with Node.js based on [c.js](http://kx.com/q/c/c.js).
 
 ## Installation
 
-npm install node -q
+	npm install node -q
 
 ## Usage
 
 ### Create Connection
 
-	var con = connect("localhost", 5000);
+	connect("localhost", 5000, function(err, con) {
+		if (err) throw err;
+		console.log("connected");
+		// interact with con like demonstrated below
+	});
 
 ### Execute Q code and receive result
 
@@ -56,12 +60,13 @@ npm install node -q
 
 ## API
 
-### connect(host, port)
+### connect(host, port, cb)
 
 * `host`: String (e. g. "localhost")
 * `port`: Number (e. g. 5000)
-
-return Connection
+* `cb`: Function(`err`, `con`)
+	* `err`: `Error` or `undefined`
+	* `conn`: `Connection` or `undefined`
 
 ### Connection
 
@@ -75,7 +80,9 @@ Sync request/response.
 * `x`: Object (optional)
 * `y`: Object (optional)
 * `z`: Object (optional)
-* `cb`: Function(err, res)
+* `cb`: Function(`err`, `res`)
+	* `err`: `Error` or `undefined`
+	* `res`: `Object` or `undefined`
 
 #### ks(s, [x, [y, [z,]]] cb)
 
@@ -85,17 +92,15 @@ Async request.
 * `x`: Object (optional)
 * `y`: Object (optional)
 * `z`: Object (optional)
-* `cb`: Function(err)
+* `cb`: Function(`err`)
+	* `err`: `Error` or `undefined`
 
 #### close(cb)
 
-* `cb`: Function(err)
+* `cb`: Function(`err`)
+	* `err`: `Error` or `undefined`
 
 #### Events
-
-##### ready
-
-Fired if the connection is ready. You can interacti with the `Connection` before `ready`is fired! All requests are buffered until the connection is established and ready.
 
 ##### upd(table, data)
 
