@@ -1,0 +1,12 @@
+{
+	"name": "node-q",
+	"version": "1.0.0",
+	"description": "Q interfacing with Node.js",
+	"keywords": ["q", "kx", "interfacing"],
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "Michael Wittig <michael.wittig@cinovo.de>",
+	"license": "Apache-2.0"
+}
