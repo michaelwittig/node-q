@@ -1,3 +1,7 @@
+[![Build Status](https://secure.travis-ci.org/cinovo/node-q.png)](http://travis-ci.org/cinovo/node-q)
+[![NPM version](https://badge.fury.io/js/node-q.png)](http://badge.fury.io/js/node-q)
+[![NPM dependencies](https://david-dm.org/cinovo/node-q.png)](https://david-dm.org/cinovo/node-q)
+
 # node-q
 
 Q interfacing with Node.js based on [c.js](http://kx.com/q/c/c.js).
