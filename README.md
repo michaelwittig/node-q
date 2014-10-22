@@ -17,7 +17,8 @@ npm install node-q
 ### Create Connection
 
 ```javascript
-connect("localhost", 5000, function(err, con) {
+var nodeq = require("node-q");
+nodeq.connect("localhost", 5000, function(err, con) {
 	if (err) throw err;
 	console.log("connected");
 	// interact with con like demonstrated below
