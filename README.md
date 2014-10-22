@@ -8,7 +8,9 @@ Q interfacing with Node.js based on [c.js](http://kx.com/q/c/c.js).
 
 ## Installation
 
-	npm install node -q
+```
+npm install node-q
+```
 
 ## Usage
 
