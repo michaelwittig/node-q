@@ -84,7 +84,7 @@ con.close(function() {
 
 ### Connection
 
-Is an EventEmitter.
+Is an [EventEmitter](http://nodejs.org/api/events.html#events_class_events_eventemitter).
 
 #### k(s, [x, [y, [z,]]] cb)
 
