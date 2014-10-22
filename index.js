@@ -1,11 +1,11 @@
 var c = require("./lib/c.js");
 var net = require("net");
-var memcpy = require("memcpy");
+var events = require("events");
 
 function toBuffer(ab) {
 	var buffer = new Buffer(ab.byteLength);
 	var view = new Uint8Array(ab);
-	for (var i = 0; i < buffer.length; ++i) {
+	for (var i = 0; i < buffer.length; i += 1) {
 		buffer[i] = view[i];
 	}
 	return buffer;
@@ -14,13 +14,14 @@ function toBuffer(ab) {
 function toArrayBuffer(buffer) {
 	var ab = new ArrayBuffer(buffer.length);
 	var view = new Uint8Array(ab);
-	for (var i = 0; i < buffer.length; ++i) {
+	for (var i = 0; i < buffer.length; i += 1) {
 		view[i] = buffer[i];
 	}
 	return ab;
 }
 
 function connect(host, port) {
+	var emitter = new events.EventEmitter();
 	var ready = false;
 	var socket = net.connect(port, host, function() {
 		var b = new Buffer(11);
@@ -29,13 +30,29 @@ function connect(host, port) {
 		b.writeUInt8(0x0, 10); // zero terminated
 		socket.write(b, function() {
 			ready = true;
-			socket.emit("ready");
+			emitter.emit("ready");
 		});
 	});
 	socket.on("data", function(buffer) {
+		// TODO read header length and then wait until complete message is received
+		console.log("data");
 		var ab = toArrayBuffer(buffer);
-		var o = c.deserialize(ab);
-		socket.emit("o", o);
+		var o;
+		var err;
+		try {
+			o = c.deserialize(ab);
+			err = undefined;
+		} catch (e) {
+			console.log("o err", e);
+			o = null;
+			err = e;
+		}
+		socket.emit("o", err, o);
+		if (err === undefined && Array.isArray(o) && o[0] === "upd") {
+			console.log("emit upd", [o[1], o[2]]);
+			console.log("listeners", events.EventEmitter.listenerCount(emitter, "upd"));
+			emitter.emit("upd", o[1], o[2]);
+		}
 	});
 	socket.on("end", function() {
 		console.log("end");
@@ -76,8 +93,8 @@ function connect(host, port) {
 				var b = toBuffer(ab);
 				b.writeUInt8(0x1, 1); // MsgType: 1 := sync
 				socket.write(b, function() {
-					socket.once("o", function(o) {
-						cb(undefined, o);
+					socket.once("o", function(err, o) {
+						cb(err, o);
 					});
 				});
 			}
@@ -105,9 +122,7 @@ function connect(host, port) {
 				var ab = c.serialize(payload); // array buffer
 				var b = toBuffer(ab);
 				socket.write(b, function() {
-					if (cb) {
-						cb();
-					}
+					cb();
 				});
 			}
 		},
@@ -119,31 +134,50 @@ function connect(host, port) {
 			});
 			socket.end();
 		},
+		"addListener": emitter.addListener,
+		"on": emitter.on,
+		"once": emitter.once,
+		"removeListener": emitter.removeListener,
+		"removeAllListeners": emitter.removeAllListeners,
+		"listeners": emitter.listeners,
 		"socket": socket
 	}
 }
 exports.connect = connect;
 
-var con = connect("localhost", 5000);
+var con1 = connect("192.168.64.61", 4010);
 
-con.k("sum 1 2 3", function(err, res) {
+con1.on("upd", function(t, d) {
+	console.log("upd", [t, d]);
+});
+
+con1.ks(".u.sub[`;`]", function(err, res) {
 	console.log("k", [err, res]);
 });
 
-con.k("sum", [1, 2, 3], function(err, res) {
+var con2 = connect("192.168.64.61", 4010);
+
+con2.k("sum 1 2 3", function(err, res) {
 	console.log("k", [err, res]);
 });
 
-con.ks("show 1 2 3", function(err) {
+con2.k("sum", [1, 2, 3], function(err, res) {
+	console.log("k", [err, res]);
+});
+
+con2.ks("show 1 2 3", function(err) {
 	console.log("ks", err);
 });
 
-con.ks("show", [1, 2, 3], function(err) {
+con2.ks("show", [1, 2, 3], function(err) {
 	console.log("ks", err);
 });
 
 setTimeout(function() {
-	con.close(function() {
-		console.log("closed");
+	con1.close(function() {
+		console.log("con1 closed");
+	});
+	con2.close(function() {
+		console.log("con2 closed");
 	});
 }, 10 * 1000);
