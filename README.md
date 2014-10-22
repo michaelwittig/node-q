@@ -10,53 +10,67 @@ Q interfacing with Node.js based on [c.js](http://kx.com/q/c/c.js).
 
 ### Create Connection
 
-	connect("localhost", 5000, function(err, con) {
-		if (err) throw err;
-		console.log("connected");
-		// interact with con like demonstrated below
-	});
+```javascript
+connect("localhost", 5000, function(err, con) {
+	if (err) throw err;
+	console.log("connected");
+	// interact with con like demonstrated below
+});
+```
 
 ### Execute Q code and receive result
 
-	con.k("sum 1 2 3", function(err, res) {
-		if (err) throw err;
-		console.log("result", res);
-	});
+```javascript
+con.k("sum 1 2 3", function(err, res) {
+	if (err) throw err;
+	console.log("result", res);
+});
+```
 
 ### Execute function with parameters and receive result
 
-	con.k("sum", [1, 2, 3], function(err, res) {
-		if (err) throw err;
-		console.log("result", res);
-	});
+```javascript
+con.k("sum", [1, 2, 3], function(err, res) {
+	if (err) throw err;
+	console.log("result", res);
+});
+```
 
 ### Async execute Q code
 
-	con.ks("show 1 2 3", function(err) {
-		if (err) throw err;
-	});
+```javascript
+con.ks("show 1 2 3", function(err) {
+	if (err) throw err;
+});
+```
 
 ### Async execute function with parameters
 
-	con.ks("show", [1, 2, 3], function(err) {
-		if (err) throw err;
-	});
+```javascript
+con.ks("show", [1, 2, 3], function(err) {
+	if (err) throw err;
+});
+```
 
 ### Subscribe to kdb+tick
 
-	con.on("upd", function(table, data) {
-		console.log(table, data);
-	});
+```javascript
+con.on("upd", function(table, data) {
+	console.log(table, data);
+});
 
-	con.ks(".u.sub[`;`]", function(err) { // subscribe to all tables and all symbols
-		if (err) throw err;
-	});
+con.ks(".u.sub[`;`]", function(err) { // subscribe to all tables and all symbols
+	if (err) throw err;
+});
+```
 
 ### Close connection
 
-	con.close(function() {
-		console.log("con closed");
-	});
+```javascript
+con.close(function() {
+	console.log("con closed");
+});
+```
 
 ## API
 
