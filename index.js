@@ -24,6 +24,7 @@ function toArrayBuffer(buffer) {
 function Connection(socket) {
 	events.EventEmitter.call(this);
 	this.socket = socket;
+	this.activeRequestResponse = false;
 	var self = this;
 	this.socket.on("data", function(buffer) {
 		// TODO read header length and then wait until complete message is received
@@ -37,9 +38,12 @@ function Connection(socket) {
 			o = null;
 			err = e;
 		}
-		self.emit("o", err, o);
-		if (err === undefined && Array.isArray(o) && o[0] === "upd") {
-			self.emit("upd", o[1], o[2]);
+		if (self.activeRequestResponse === true) {
+			self.emit("res", err, o);
+		} else {
+			if (err === undefined && Array.isArray(o) && o[0] === "upd") {
+				self.emit("upd", o[1], o[2]);
+			}
 		}
 	});
 	this.socket.on("end", function() {
@@ -57,18 +61,27 @@ function Connection(socket) {
 }
 util.inherits(Connection, events.EventEmitter);
 Connection.prototype.auth = function(cb) {
+	if (this.activeRequestResponse === true) {
+		throw new Error("Only one request at a time");
+	}
+	this.activeRequestResponse = true;
 	var b = new Buffer(11);
 	b.write("anonymous", 0, 9, "ascii"); // auth (username:password)
 	b.writeUInt8(0x3, 9); // 3
 	b.writeUInt8(0x0, 10); // zero terminated
 	var self = this;
 	this.socket.write(b, function() {
-		self.once("o", function(err, o) {
+		self.once("res", function(err, o) {
+			self.activeRequestResponse = false;
 			cb(err);
 		});
 	});
 }
 Connection.prototype.k = function(s, x, y, z, cb) {
+	if (this.activeRequestResponse === true) {
+		throw new Error("Only one request at a time");
+	}
+	this.activeRequestResponse = true;
 	cb = arguments[arguments.length -1];
 	var payload;
 	if (arguments.length === 2) {
@@ -87,7 +100,8 @@ Connection.prototype.k = function(s, x, y, z, cb) {
 	b.writeUInt8(0x1, 1); // MsgType: 1 := sync
 	var self = this;
 	this.socket.write(b, function() {
-		self.once("o", function(err, o) {
+		self.once("res", function(err, o) {
+			self.activeRequestResponse = false;
 			cb(err, o);
 		});
 	});
