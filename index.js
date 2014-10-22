@@ -35,7 +35,6 @@ function connect(host, port) {
 	});
 	socket.on("data", function(buffer) {
 		// TODO read header length and then wait until complete message is received
-		console.log("data");
 		var ab = toArrayBuffer(buffer);
 		var o;
 		var err;
@@ -43,14 +42,11 @@ function connect(host, port) {
 			o = c.deserialize(ab);
 			err = undefined;
 		} catch (e) {
-			console.log("o err", e);
 			o = null;
 			err = e;
 		}
 		socket.emit("o", err, o);
 		if (err === undefined && Array.isArray(o) && o[0] === "upd") {
-			console.log("emit upd", [o[1], o[2]]);
-			console.log("listeners", events.EventEmitter.listenerCount(emitter, "upd"));
 			emitter.emit("upd", o[1], o[2]);
 		}
 	});
@@ -144,40 +140,3 @@ function connect(host, port) {
 	}
 }
 exports.connect = connect;
-
-var con1 = connect("192.168.64.61", 4010);
-
-con1.on("upd", function(t, d) {
-	console.log("upd", [t, d]);
-});
-
-con1.ks(".u.sub[`;`]", function(err, res) {
-	console.log("k", [err, res]);
-});
-
-var con2 = connect("192.168.64.61", 4010);
-
-con2.k("sum 1 2 3", function(err, res) {
-	console.log("k", [err, res]);
-});
-
-con2.k("sum", [1, 2, 3], function(err, res) {
-	console.log("k", [err, res]);
-});
-
-con2.ks("show 1 2 3", function(err) {
-	console.log("ks", err);
-});
-
-con2.ks("show", [1, 2, 3], function(err) {
-	console.log("ks", err);
-});
-
-setTimeout(function() {
-	con1.close(function() {
-		console.log("con1 closed");
-	});
-	con2.close(function() {
-		console.log("con2 closed");
-	});
-}, 10 * 1000);

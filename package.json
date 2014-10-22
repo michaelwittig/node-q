@@ -1,6 +1,6 @@
 {
 	"name": "node-q",
-	"version": "1.0.0",
+	"version": "0.1.0",
 	"description": "Q interfacing with Node.js",
 	"keywords": ["q", "kx", "interfacing"],
 	"main": "index.js",
