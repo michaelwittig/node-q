@@ -194,15 +194,3 @@ function connect(host, port, cb) {
 	socket.once("error", errorcb);
 }
 exports.connect = connect;
-
-connect("192.168.64.61", 5010, function(err, con) {
-	if (err) throw err;
-	console.log("connected");
-	con.on("upd", function(table, data) {
-		console.log("", data);
-	});
-
-	con.ks(".u.sub[`eurex_quote_0;`]", function(err) { // subscribe to all tables and all symbols
-		if (err) throw err;
-	});
-});
