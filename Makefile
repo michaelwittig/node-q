@@ -2,7 +2,7 @@ default: test
 
 jslint:
 	@echo "jslint"
-	@find . -name "*.js" -not -path "./node_modules/*" -not -path "./lib/*" -print0 | xargs -0 ./node_modules/.bin/jslint --white --nomen --node --predef describe --predef it --predef Uint8Array --predef ArrayBuffer
+	@find . -name "*.js" -not -path "./node_modules/*" -not -path "./lib/*" -print0 | xargs -0 ./node_modules/.bin/jslint --white --nomen --node --predef describe --predef it --predef before --predef after --predef Uint8Array --predef ArrayBuffer
 
 circular:
 	@echo "circular"

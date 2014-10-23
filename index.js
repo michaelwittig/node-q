@@ -50,7 +50,12 @@ Connection.prototype.listen = function() {
 	var self = this;
 	this.chunk = new Buffer(0);
 	this.socket.on("data", function(inbuffer) {
-		var buffer;
+		var buffer,
+			length, // current msg length
+			ab, // array buffer
+			o, // deserialized object
+			err; // deserialize error
+
 		if (self.chunk.length !== 0) {
 			buffer = new Buffer(self.chunk.length + inbuffer.length);
 			self.chunk.copy(buffer);
@@ -58,12 +63,11 @@ Connection.prototype.listen = function() {
 		} else {
 			buffer = inbuffer;
 		}
+
 		while (buffer.length >= 8) {
-			var length = buffer.readUInt32LE(4);
+			length = buffer.readUInt32LE(4);
 			if (buffer.length >= length) {
-				var ab = toArrayBuffer(buffer),
-					o,
-					err;
+				ab = toArrayBuffer(buffer.slice(0, length));
 				try {
 					o = libc.deserialize(ab);
 					err = undefined;
@@ -71,7 +75,6 @@ Connection.prototype.listen = function() {
 					o = null;
 					err = e;
 				}
-				var view = new Uint8Array(ab);
 				if (buffer.readUInt8(1) === 2) { // MsgType: 2 := response
 					if (self.activeRequestResponse === true) {
 						self.emit("res", err, o);
@@ -90,6 +93,7 @@ Connection.prototype.listen = function() {
 				break;
 			}
 		}
+
 		self.chunk = buffer;
 	});
 };
@@ -190,3 +194,15 @@ function connect(host, port, cb) {
 	socket.once("error", errorcb);
 }
 exports.connect = connect;
+
+connect("192.168.64.61", 5010, function(err, con) {
+	if (err) throw err;
+	console.log("connected");
+	con.on("upd", function(table, data) {
+		console.log("", data);
+	});
+
+	con.ks(".u.sub[`eurex_quote_0;`]", function(err) { // subscribe to all tables and all symbols
+		if (err) throw err;
+	});
+});

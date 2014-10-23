@@ -6,7 +6,7 @@ describe("subs", function() {
 	var con;
 	before(function(done) {
 		nodeq.connect("localhost", 5000, function(err, c) {
-			if (err) throw err;
+			if (err) { throw err; }
 			con = c;
 			done();
 		});
@@ -24,7 +24,7 @@ describe("subs", function() {
 			done();
 		});
 		con.ks(".u.sub[`;`]", function(err) {
-			if (err) throw err;
+			if (err) { throw err; }
 		});
 	});
 });
