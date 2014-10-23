@@ -48,27 +48,49 @@ util.inherits(Connection, events.EventEmitter);
 Connection.prototype.listen = function() {
 	"use strict";
 	var self = this;
-	this.socket.on("data", function(buffer) {
-		var ab = toArrayBuffer(buffer),
-			o,
-			err;
-		try {
-			o = libc.deserialize(ab);
-			err = undefined;
-		} catch (e) {
-			o = null;
-			err = e;
-		}
-		var view = new Uint8Array(ab);
-		if (view[1] === 2) { // MsgType: 2 := response
-			if (self.activeRequestResponse === true) {
-				self.emit("res", err, o);
-			}
+	this.chunk = new Buffer(0);
+	this.socket.on("data", function(inbuffer) {
+		var buffer;
+		if (self.chunk.length !== 0) {
+			buffer = new Buffer(self.chunk.length + inbuffer.length);
+			self.chunk.copy(buffer);
+			inbuffer.copy(buffer, self.chunk.length);
 		} else {
-			if (err === undefined && Array.isArray(o) && o[0] === "upd") {
-				self.emit("upd", o[1], o[2]);
+			buffer = inbuffer;
+		}
+		while (buffer.length >= 8) {
+			var length = buffer.readUInt32LE(4);
+			if (buffer.length >= length) {
+				var ab = toArrayBuffer(buffer),
+					o,
+					err;
+				try {
+					o = libc.deserialize(ab);
+					err = undefined;
+				} catch (e) {
+					o = null;
+					err = e;
+				}
+				var view = new Uint8Array(ab);
+				if (buffer.readUInt8(1) === 2) { // MsgType: 2 := response
+					if (self.activeRequestResponse === true) {
+						self.emit("res", err, o);
+					}
+				} else {
+					if (err === undefined && Array.isArray(o) && o[0] === "upd") {
+						self.emit("upd", o[1], o[2]);
+					}
+				}
+				if (buffer.length > length) {
+					buffer = buffer.slice(length);
+				} else {
+					buffer = new Buffer(0);
+				}
+			} else {
+				break;
 			}
 		}
+		self.chunk = buffer;
 	});
 };
 Connection.prototype.auth = function(cb) {
