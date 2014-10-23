@@ -3,12 +3,12 @@ var nodeq = require("../index.js"),
 
 describe("connect", function() {
 	"use strict";
-	it("should should fail if enpoint is unavailable", function(done){
-		nodeq.connect("localhost", 9999, function(err) {
+	it("should work if enpoint is available", function(done) {
+		nodeq.connect("localhost", 5000, function(err) {
 			if (err) {
-				done();
+				throw err;
 			} else {
-				assert.fail("no err");
+				done();
 			}
 		});
 	});

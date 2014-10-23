@@ -9,8 +9,13 @@ circular:
 	@./node_modules/.bin/madge --circular --format amd .
 
 mocha:
-	@echo "mocha"
+	@echo "mocha (unit test)"
 	@./node_modules/.bin/mocha test/*.js
+	@echo
+
+mochait:
+	@echo "mocha (integreation test assumes running kdb+tick process on localhost:5000)"
+	@./node_modules/.bin/mocha itest/*.js
 	@echo
 
 test: jslint mocha circular

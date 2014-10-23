@@ -129,3 +129,47 @@ If you use kdb+tick and subscribe like `con.ks(".u.sub[`;`]", function(err) { th
 
 * `table`: String (e.g. trades)
 * `data`: Object (table represented in JavaScript are Arrays of Objects)
+
+##### error(err)
+
+If the socket emit an `error` event.
+
+* `err`: `Error`
+
+##### end()
+
+If the socket emit an `end` event.
+
+##### timeout()
+
+If the socket emit a `timeout` event.
+
+##### close(had_error)
+
+If the socket emit a `close` event.
+
+* `had_error`: Boolean (true if the socket had a transmission error)
+
+## Contribution
+
+If you want to create a Pull-Request please make sure that `make test` runs without failures.
+
+If you have a kdb+tick setup please also run `make mochait`.
+
+### Code Style
+
+	make jslint
+
+### Unit Tests
+
+	make mocha
+
+### Integration Test
+
+Assumes running kdb+tick process on localhost:5000!
+
+	make mochait
+
+### Circular depdendencies
+
+	make circular

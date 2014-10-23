@@ -31,6 +31,23 @@ function Connection(socket) {
 	this.socket = socket;
 	this.activeRequestResponse = false;
 	var self = this;
+	this.socket.on("end", function() {
+		self.emit("end");
+	});
+	this.socket.on("timeout", function() {
+		self.emit("timeout");
+	});
+	this.socket.on("error", function(err) {
+		self.emit("error", err);
+	});
+	this.socket.on("close", function(had_error) {
+		self.emit("close", had_error);
+	});
+}
+util.inherits(Connection, events.EventEmitter);
+Connection.prototype.listen = function() {
+	"use strict";
+	var self = this;
 	this.socket.on("data", function(buffer) {
 		var ab = toArrayBuffer(buffer),
 			o,
@@ -42,44 +59,33 @@ function Connection(socket) {
 			o = null;
 			err = e;
 		}
-		if (self.activeRequestResponse === true) {
-			self.emit("res", err, o);
+		var view = new Uint8Array(ab);
+		if (view[1] === 2) { // MsgType: 2 := response
+			if (self.activeRequestResponse === true) {
+				self.emit("res", err, o);
+			}
 		} else {
 			if (err === undefined && Array.isArray(o) && o[0] === "upd") {
 				self.emit("upd", o[1], o[2]);
 			}
 		}
 	});
-	this.socket.on("end", function() {
-		console.log("end");
-	});
-	this.socket.on("timeout", function() {
-		console.log("timeout");
-	});
-	this.socket.on("error", function(err) {
-		console.log("error", err);
-	});
-	this.socket.on("close", function(had_error) {
-		console.log("close", had_error);
-	});
-}
-util.inherits(Connection, events.EventEmitter);
+};
 Connection.prototype.auth = function(cb) {
 	"use strict";
-	if (this.activeRequestResponse === true) {
-		throw new Error("Only one request at a time");
-	}
-	this.activeRequestResponse = true;
 	var b = new Buffer(11),
 		self = this;
 	b.write("anonymous", 0, 9, "ascii"); // auth (username:password)
 	b.writeUInt8(0x3, 9); // 3
 	b.writeUInt8(0x0, 10); // zero terminated
-	this.socket.write(b, function() {
-		self.once("res", function(err) {
-			self.activeRequestResponse = false;
-			cb(err);
-		});
+	this.socket.write(b);
+	this.socket.once("data", function(buffer) {
+		if (buffer.length === 1) { // capability byte
+			self.listen();
+			cb();
+		} else {
+			cb(new Error("Invalid auth response from server"));
+		}
 	});
 };
 Connection.prototype.k = function(s, x, y, z, cb) {
