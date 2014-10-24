@@ -2,26 +2,19 @@ var libc = require("./lib/c.js");
 var net = require("net");
 var events = require("events");
 var util = require("util");
+var memcpy = require("memcpy");
 
 function toBuffer(ab) {
 	"use strict";
-	var buffer = new Buffer(ab.byteLength),
-		view = new Uint8Array(ab),
-		i;
-	for (i = 0; i < buffer.length; i += 1) {
-		buffer[i] = view[i];
-	}
+	var buffer = new Buffer(ab.byteLength);
+	memcpy(buffer, ab);
 	return buffer;
 }
 
 function toArrayBuffer(buffer) {
 	"use strict";
-	var ab = new ArrayBuffer(buffer.length),
-		view = new Uint8Array(ab),
-		i;
-	for (i = 0; i < buffer.length; i += 1) {
-		view[i] = buffer[i];
-	}
+	var ab = new ArrayBuffer(buffer.length);
+	memcpy(ab, buffer);
 	return ab;
 }
 
