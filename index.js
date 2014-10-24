@@ -3,26 +3,45 @@ var net = require("net");
 var events = require("events");
 var util = require("util");
 
-function toBuffer(ab) {
-	"use strict";
-	var buffer = new Buffer(ab.byteLength),
-		view = new Uint8Array(ab),
-		i;
-	for (i = 0; i < buffer.length; i += 1) {
-		buffer[i] = view[i];
-	}
-	return buffer;
-}
-
-function toArrayBuffer(buffer) {
-	"use strict";
-	var ab = new ArrayBuffer(buffer.length),
-		view = new Uint8Array(ab),
-		i;
-	for (i = 0; i < buffer.length; i += 1) {
-		view[i] = buffer[i];
-	}
-	return ab;
+var impl, toBuffer, toArrayBuffer;
+try {
+	var memcpy = require("memcpy"); // optional dependency
+	toBuffer = function(ab) {
+		"use strict";
+		var buffer = new Buffer(ab.byteLength);
+		memcpy(buffer, ab);
+		return buffer;
+	};
+	toArrayBuffer = function(buffer) {
+		"use strict";
+		var ab = new ArrayBuffer(buffer.length);
+		memcpy(ab, buffer);
+		return ab;
+	};
+	impl = "memcpy";
+} catch (err) {
+	console.log("fallback");
+	toBuffer = function(ab) {
+		"use strict";
+		var buffer = new Buffer(ab.byteLength),
+			view = new Uint8Array(ab),
+			i;
+		for (i = 0; i < buffer.length; i += 1) {
+			buffer[i] = view[i];
+		}
+		return buffer;
+	};
+	toArrayBuffer = function(buffer) {
+		"use strict";
+		var ab = new ArrayBuffer(buffer.length),
+			view = new Uint8Array(ab),
+			i;
+		for (i = 0; i < buffer.length; i += 1) {
+			view[i] = buffer[i];
+		}
+		return ab;
+	};
+	impl = "js";
 }
 
 function Connection(socket) {
@@ -194,3 +213,5 @@ function connect(host, port, cb) {
 	socket.once("error", errorcb);
 }
 exports.connect = connect;
+
+exports.impl = impl;

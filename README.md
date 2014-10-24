@@ -81,6 +81,10 @@ con.close(function() {
 
 ## API
 
+### impl
+
+String (e.g. "memcpy" or "js")
+
 ### connect(host, port, cb)
 
 * `host`: String (e. g. "localhost")
