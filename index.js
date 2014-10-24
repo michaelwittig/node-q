@@ -74,6 +74,7 @@ Connection.prototype.listen = function() {
 			ab, // array buffer
 			o, // deserialized object
 			err, // deserialize error
+			type,
 			responseNo;
 
 		if (self.chunk.length !== 0) {
@@ -87,13 +88,19 @@ Connection.prototype.listen = function() {
 		while (buffer.length >= 8) {
 			length = buffer.readUInt32LE(4);
 			if (buffer.length >= length) {
-				ab = toArrayBuffer(buffer.slice(0, length));
-				try {
-					o = libc.deserialize(ab);
-					err = undefined;
-				} catch (e) {
-					o = null;
-					err = e;
+				type = buffer.readInt8(8);
+				if (type === -128) { // error type
+					o = undefined;
+					err = new Error("error " + buffer.toString("ascii", 9, length - 1));
+				} else {
+					ab = toArrayBuffer(buffer.slice(0, length));
+					try {
+						o = libc.deserialize(ab);
+						err = undefined;
+					} catch (e) {
+						o = null;
+						err = e;
+					}
 				}
 				if (buffer.readUInt8(1) === 2) { // MsgType: 2 := response
 					responseNo = self.nextResponseNo;

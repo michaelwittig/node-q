@@ -25,6 +25,17 @@ describe("syncreqres", function() {
 			done();
 		});
 	});
+	it("evaluate malformed q", function(done) {
+		con.k("sxm 1 2 3", function(err) {
+			if (err) {
+				console.log("err.message", err.message);
+				assert.equal(err.message, "error sxm", "err");
+				done();
+			} else {
+				assert.fail("no err");
+			}
+		});
+	});
 	it("evaluate function with one parameter", function(done) {
 		con.k("sum", [1, 2, 3], function(err, res) {
 			if (err) { throw err; }
