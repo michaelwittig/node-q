@@ -85,10 +85,12 @@ con.close(function() {
 
 String (e.g. "memcpy" or "js")
 
-### connect(host, port, cb)
+### connect(host, port, [user, password,] cb)
 
 * `host`: String (e. g. "localhost")
 * `port`: Number (e. g. 5000)
+* `user`: String (optional)
+* `password`: String (optional)
 * `cb`: Function(`err`, `con`)
 	* `err`: `Error` or `undefined`
 	* `conn`: `Connection` or `undefined`

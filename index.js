@@ -117,18 +117,23 @@ Connection.prototype.listen = function() {
 		self.chunk = buffer;
 	});
 };
-Connection.prototype.auth = function(cb) {
+Connection.prototype.auth = function(auth, cb) {
 	"use strict";
-	var b = new Buffer(11),
+	var n = Buffer.byteLength(auth, "ascii"),
+		b = new Buffer(n + 2),
 		self = this;
-	b.write("anonymous", 0, 9, "ascii"); // auth (username:password)
-	b.writeUInt8(0x3, 9); // 3
-	b.writeUInt8(0x0, 10); // zero terminated
+	b.write(auth, 0, n, "ascii"); // auth (username:password)
+	b.writeUInt8(0x1, n); // 1
+	b.writeUInt8(0x0, n+1); // zero terminated
 	this.socket.write(b);
 	this.socket.once("data", function(buffer) {
 		if (buffer.length === 1) { // capability byte
-			self.listen();
-			cb();
+			if (buffer[0] === 1) {
+				self.listen();
+				cb();
+			} else {
+				cb(new Error("Invalid capability byte from server"));
+			}	
 		} else {
 			cb(new Error("Invalid auth response from server"));
 		}
@@ -136,7 +141,7 @@ Connection.prototype.auth = function(cb) {
 };
 Connection.prototype.k = function(s, x, y, z, cb) {
 	"use strict";
-	cb = arguments[arguments.length -1];
+	cb = arguments[arguments.length - 1];
 	var self = this,
 		payload,
 		ab, // array buffer
@@ -165,7 +170,7 @@ Connection.prototype.k = function(s, x, y, z, cb) {
 };
 Connection.prototype.ks = function(s, x, y, z, cb) {
 	"use strict";
-	cb = arguments[arguments.length -1];
+	cb = arguments[arguments.length - 1];
 	var payload,
 		ab, // array buffer
 		b;
@@ -196,17 +201,42 @@ Connection.prototype.close = function(cb) {
 	this.socket.end();
 };
 
-function connect(host, port, cb) {
+function connect(host, port, user, password, cb) {
 	"use strict";
-	function errorcb(err) {
-		cb(err);
+	var auth,
+		errorcb,
+		closecb,
+		socket,
+		error = false,
+		close = false;
+	cb = arguments[arguments.length -1];
+	if (arguments.length === 3) {
+		auth = "anonymous";
+	} else if (arguments.length === 5) {
+		auth = user + ":" + password;
+	} else {
+		throw new Error("only three or five arguments allowed");
 	}
-	var socket = net.connect(port, host, function() {
+	errorcb = function(err) {
+		error = true;
+		cb(err);
+	};
+	closecb = function() {
+		close = true;
+		cb(new Error("Connection closes (wrong auth?)"));
+	};
+	socket = net.connect(port, host, function() {
 		socket.removeListener("error", errorcb);
-		var con = new Connection(socket);
-		con.auth(function() {
-			cb(undefined, con);
-		});
+		if (error === false) {
+			socket.once("close", closecb);
+			var con = new Connection(socket);
+			con.auth(auth, function() {
+				socket.removeListener("close", closecb);
+				if (close === false) {
+					cb(undefined, con);
+				}
+			});
+		}
 	});
 	socket.once("error", errorcb);
 }
