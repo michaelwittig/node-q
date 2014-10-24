@@ -73,7 +73,8 @@ Connection.prototype.listen = function() {
 			length, // current msg length
 			ab, // array buffer
 			o, // deserialized object
-			err; // deserialize error
+			err, // deserialize error
+			responseNo;
 
 		if (self.chunk.length !== 0) {
 			buffer = new Buffer(self.chunk.length + inbuffer.length);
@@ -95,7 +96,9 @@ Connection.prototype.listen = function() {
 					err = e;
 				}
 				if (buffer.readUInt8(1) === 2) { // MsgType: 2 := response
-					self.emit("response:" + self.nextResponseNo++, err, o);
+					responseNo = self.nextResponseNo;
+					self.nextResponseNo += 1;
+					self.emit("response:" + responseNo, err, o);
 				} else {
 					if (err === undefined && Array.isArray(o) && o[0] === "upd") {
 						self.emit("upd", o[1], o[2]);
@@ -138,7 +141,8 @@ Connection.prototype.k = function(s, x, y, z, cb) {
 		payload,
 		ab, // array buffer
 		b,
-		requestNo = this.nextRequestNo++;
+		requestNo = this.nextRequestNo;
+	this.nextRequestNo += 1;
 	if (arguments.length === 2) {
 		payload = s;
 	} else if (arguments.length === 3) {
