@@ -34,6 +34,7 @@ nodeq.connect("localhost", 5000, "user", "password", function(err, con) {
 	console.log("connected");
 	// interact with con like demonstrated below
 });
+```
 
 ### Execute Q code and receive result
 
