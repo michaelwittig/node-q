@@ -25,6 +25,16 @@ nodeq.connect("localhost", 5000, function(err, con) {
 });
 ```
 
+#### Create Connection with user and password auth
+
+```javascript
+var nodeq = require("node-q");
+nodeq.connect("localhost", 5000, "user", "password", function(err, con) {
+	if (err) throw err;
+	console.log("connected");
+	// interact with con like demonstrated below
+});
+
 ### Execute Q code and receive result
 
 ```javascript
