@@ -10,7 +10,9 @@
 	"author": "Michael Wittig <michael.wittig@cinovo.de>",
 	"license": "Apache-2.0",
 	"dependencies": {
-		"assert-plus": "0.1.5",
+		"assert-plus": "0.1.5"
+	},
+	"optionalDependencies": {
 		"memcpy": "0.5.0"
 	},
 	"devDependencies": {
