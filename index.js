@@ -130,12 +130,12 @@ Connection.prototype.auth = function(auth, cb) {
 		b = new Buffer(n + 2),
 		self = this;
 	b.write(auth, 0, n, "ascii"); // auth (username:password)
-	b.writeUInt8(0x1, n); // 1
+	b.writeUInt8(0x1, n); // capability byte (compression, timestamp, timespan) http://code.kx.com/wiki/Reference/ipcprotocol#Handshake
 	b.writeUInt8(0x0, n+1); // zero terminated
 	this.socket.write(b);
 	this.socket.once("data", function(buffer) {
-		if (buffer.length === 1) { // capability byte
-			if (buffer[0] === 1) {
+		if (buffer.length === 1) {
+			if (buffer[0] >= 1) { // capability byte must support at least (compression, timestamp, timespan) http://code.kx.com/wiki/Reference/ipcprotocol#Handshake
 				self.listen();
 				cb();
 			} else {
