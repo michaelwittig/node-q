@@ -4,7 +4,7 @@
 
 # node-q
 
-Q interfacing with Node.js based on [c.js](http://kx.com/q/c/c.js).
+Q interfacing with Node.js based on [c.js](http://kx.com/q/c/c.js). Supports [decompression](http://code.kx.com/wiki/Reference/ipcprotocol#Compression).
 
 ## Installation
 
