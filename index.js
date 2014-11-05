@@ -2,6 +2,7 @@ var libc = require("./lib/c.js");
 var net = require("net");
 var events = require("events");
 var util = require("util");
+var assert = require("assert-plus");
 
 var impl, toBuffer, toArrayBuffer;
 try {
@@ -146,9 +147,11 @@ Connection.prototype.auth = function(auth, cb) {
 		}
 	});
 };
-Connection.prototype.k = function(s, x, y, z, cb) {
+Connection.prototype.k = function(s, cb) {
 	"use strict";
+	assert.string(s, "s");
 	cb = arguments[arguments.length - 1];
+	assert.func(cb, "cb");
 	var self = this,
 		payload,
 		ab, // array buffer
@@ -157,14 +160,8 @@ Connection.prototype.k = function(s, x, y, z, cb) {
 	this.nextRequestNo += 1;
 	if (arguments.length === 2) {
 		payload = s;
-	} else if (arguments.length === 3) {
-		payload = [s, x];
-	} else if (arguments.length === 4) {
-		payload = [s, x, y];
-	} else if (arguments.length === 5) {
-		payload = [s, x, y, z];
 	} else {
-		throw new Error("only two to five arguments allowed");
+		payload = Array.prototype.slice.call(arguments, 0, arguments.length - 1);
 	}
 	ab = libc.serialize(payload);
 	b = toBuffer(ab);
@@ -175,22 +172,18 @@ Connection.prototype.k = function(s, x, y, z, cb) {
 		});
 	});
 };
-Connection.prototype.ks = function(s, x, y, z, cb) {
+Connection.prototype.ks = function(s, cb) {
 	"use strict";
+	assert.string(s, "s");
 	cb = arguments[arguments.length - 1];
+	assert.func(cb, "cb");
 	var payload,
 		ab, // array buffer
 		b;
 	if (arguments.length === 2) {
 		payload = s;
-	} else if (arguments.length === 3) {
-		payload = [s, x];
-	} else if (arguments.length === 4) {
-		payload = [s, x, y];
-	} else if (arguments.length === 5) {
-		payload = [s, x, y, z];
 	} else {
-		throw new Error("only two to five arguments allowed");
+		payload = Array.prototype.slice.call(arguments, 0, arguments.length - 1);
 	}
 	ab = libc.serialize(payload);
 	b = toBuffer(ab);
@@ -200,6 +193,7 @@ Connection.prototype.ks = function(s, x, y, z, cb) {
 };
 Connection.prototype.close = function(cb) {
 	"use strict";
+	assert.optionalFunc(cb, "cb");
 	this.socket.once("close", function() {
 		if (cb) {
 			cb();
@@ -210,16 +204,21 @@ Connection.prototype.close = function(cb) {
 
 function connect(host, port, user, password, cb) {
 	"use strict";
+	assert.string(host, "host");
+	assert.number(port, "port");
+	cb = arguments[arguments.length -1];
+	assert.func(cb, "cb");
 	var auth,
 		errorcb,
 		closecb,
 		socket,
 		error = false,
 		close = false;
-	cb = arguments[arguments.length -1];
 	if (arguments.length === 3) {
 		auth = "anonymous";
 	} else if (arguments.length === 5) {
+		assert.string(user, "user");
+		assert.string(password, "password");
 		auth = user + ":" + password;
 	} else {
 		throw new Error("only three or five arguments allowed");

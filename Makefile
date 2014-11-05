@@ -22,6 +22,10 @@ test: jslint mocha circular
 	@echo "test"
 	@echo
 
+itest: jslint mocha mochait circular
+	@echo "test"
+	@echo
+
 outdated:
 	@echo "outdated modules?"
 	@./node_modules/.bin/npmedge

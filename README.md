@@ -110,7 +110,7 @@ String (e.g. "memcpy" or "js")
 
 Is an [EventEmitter](http://nodejs.org/api/events.html#events_class_events_eventemitter).
 
-#### k(s, [x, [y, [z,]]] cb)
+#### k(s, [x, [y, [z, [...,] ] ] ] cb)
 
 Sync request/response.
 
@@ -118,11 +118,12 @@ Sync request/response.
 * `x`: Object (optional)
 * `y`: Object (optional)
 * `z`: Object (optional)
+* `...`: Object (optional)
 * `cb`: Function(`err`, `res`)
 	* `err`: `Error` or `undefined`
 	* `res`: `Object` or `undefined`
 
-#### ks(s, [x, [y, [z,]]] cb)
+#### ks(s, [x, [y, [z, [...,] ] ] ] cb)
 
 Async request.
 
@@ -130,12 +131,13 @@ Async request.
 * `x`: Object (optional)
 * `y`: Object (optional)
 * `z`: Object (optional)
+* `...`: Object (optional)
 * `cb`: Function(`err`)
 	* `err`: `Error` or `undefined`
 
 #### close(cb)
 
-* `cb`: Function(`err`)
+* `cb`: Function(`err`) (optional)
 	* `err`: `Error` or `undefined`
 
 #### Events
