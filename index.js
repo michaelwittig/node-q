@@ -202,27 +202,44 @@ Connection.prototype.close = function(cb) {
 	this.socket.end();
 };
 
-function connect(host, port, user, password, cb) {
+function connect(params, cb) {
 	"use strict";
-	assert.string(host, "host");
-	assert.number(port, "port");
-	cb = arguments[arguments.length -1];
-	assert.func(cb, "cb");
 	var auth,
 		errorcb,
 		closecb,
 		socket,
 		error = false,
 		close = false;
-	if (arguments.length === 3) {
-		auth = "anonymous";
-	} else if (arguments.length === 5) {
-		assert.string(user, "user");
-		assert.string(password, "password");
-		auth = user + ":" + password;
-	} else {
-		throw new Error("only three or five arguments allowed");
+	if (typeof params !== "object") {
+		params = {};
+		if (arguments.length === 3) {
+			params.host = arguments[0];
+			params.port = arguments[1];
+			cb = arguments[arguments.length -1];
+		} else if (arguments.length === 5) {
+			params.host = arguments[0];
+			params.port = arguments[1];
+			params.user = arguments[2];
+			params.password = arguments[3];
+			cb = arguments[arguments.length -1];
+		} else {
+			throw new Error("only three or five arguments allowed");
+		}
 	}
+	assert.object(params, "params");
+	assert.string(params.host, "params.host");
+	assert.number(params.port, "params.port");
+	assert.optionalString(params.user, "params.user");
+	assert.optionalString(params.password, "password");
+	assert.optionalBool(params.noDelay, "params.noDelay");
+	assert.optionalNumber(params.timeout, "params.timeout");
+	if (params.user !== undefined) {
+		assert.string(params.password, "password");
+		auth = params.user + ":" + params.password;
+	} else {
+		auth = "anonymous";
+	}
+	assert.func(cb, "cb");
 	errorcb = function(err) {
 		error = true;
 		cb(err);
@@ -231,7 +248,7 @@ function connect(host, port, user, password, cb) {
 		close = true;
 		cb(new Error("Connection closes (wrong auth?)"));
 	};
-	socket = net.connect(port, host, function() {
+	socket = net.connect(params.port, params.host, function() {
 		socket.removeListener("error", errorcb);
 		if (error === false) {
 			socket.once("close", closecb);
@@ -244,6 +261,12 @@ function connect(host, port, user, password, cb) {
 			});
 		}
 	});
+	if (params.timeout !== undefined) {
+		socket.setTimeout(params.timeout);
+	}
+	if (params.noDelay !== undefined) {
+		socket.setNoDelay(params.noDelay);
+	}
 	socket.once("error", errorcb);
 }
 exports.connect = connect;

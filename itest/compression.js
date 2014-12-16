@@ -7,7 +7,7 @@ describe("syncreqres", function() {
 	"use strict";
 	var con;
 	before(function(done) {
-		nodeq.connect(os.hostname(), 5000, function(err, c) {
+		nodeq.connect({host: os.hostname(), port: 5000}, function(err, c) {
 			if (err) { throw err; }
 			con = c;
 			done();

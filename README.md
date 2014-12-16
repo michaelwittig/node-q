@@ -18,7 +18,7 @@ npm install node-q
 
 ```javascript
 var nodeq = require("node-q");
-nodeq.connect("localhost", 5000, function(err, con) {
+nodeq.connect({host: "localhost", port: 5000}, function(err, con) {
 	if (err) throw err;
 	console.log("connected");
 	// interact with con like demonstrated below
@@ -29,7 +29,7 @@ nodeq.connect("localhost", 5000, function(err, con) {
 
 ```javascript
 var nodeq = require("node-q");
-nodeq.connect("localhost", 5000, "user", "password", function(err, con) {
+nodeq.connect({host: "localhost", port: "localhost", 5000, user: "user", password: "password"}, function(err, con) {
 	if (err) throw err;
 	console.log("connected");
 	// interact with con like demonstrated below
@@ -96,15 +96,27 @@ con.close(function() {
 
 String (e.g. "memcpy" or "js")
 
-### connect(host, port, [user, password,] cb)
+### connect(params, cb)
+
+* `params`: Object
+	* `host`: String (e. g. "localhost")
+	* `port`: Number (e. g. 5000)
+	* `user`: String (optional)
+	* `password`: String (optional)
+	* `socketNoDelay` : Boolean (optional, see http://nodejs.org/api/net.html#net_socket_setnodelay_nodelay)
+	* `socketTimeout`: Number (optional, see http://nodejs.org/api/net.html#net_socket_settimeout_timeout_callback)
+* `cb`: Function(`err`, `con`)
+	* `err`: `Error` or `undefined`
+	* `conn`: `Connection` or `undefined`
+
+### @deprecated connect(host, port, [user, password,] cb)
+
+This is deprecated. Please use the new, mor flexible API above!
 
 * `host`: String (e. g. "localhost")
 * `port`: Number (e. g. 5000)
 * `user`: String (optional)
 * `password`: String (optional)
-* `cb`: Function(`err`, `con`)
-	* `err`: `Error` or `undefined`
-	* `conn`: `Connection` or `undefined`
 
 ### Connection
 
@@ -177,7 +189,7 @@ If you have a kdb+tick setup please also run `make mochait`.
 
 ### Code Style
 
-	make jslint
+	make jshint
 
 ### Unit Tests
 

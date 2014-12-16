@@ -6,7 +6,7 @@ describe("syncreqres", function() {
 	"use strict";
 	var con;
 	before(function(done) {
-		nodeq.connect("localhost", 5000, function(err, c) {
+		nodeq.connect({host: "localhost", port: 5000}, function(err, c) {
 			if (err) { throw err; }
 			con = c;
 			done();
@@ -28,7 +28,6 @@ describe("syncreqres", function() {
 	it("evaluate malformed q", function(done) {
 		con.k("sxm 1 2 3", function(err) {
 			if (err) {
-				console.log("err.message", err.message);
 				assert.equal(err.message, "error sxm", "err");
 				done();
 			} else {

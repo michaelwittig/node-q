@@ -5,7 +5,7 @@ describe("asyncreq", function() {
 	"use strict";
 	var con;
 	before(function(done) {
-		nodeq.connect("localhost", 5000, function(err, c) {
+		nodeq.connect({host: "localhost", port: 5000}, function(err, c) {
 			if (err) { throw err; }
 			con = c;
 			done();
