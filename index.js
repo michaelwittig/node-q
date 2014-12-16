@@ -231,8 +231,8 @@ function connect(params, cb) {
 	assert.number(params.port, "params.port");
 	assert.optionalString(params.user, "params.user");
 	assert.optionalString(params.password, "password");
-	assert.optionalBool(params.noDelay, "params.noDelay");
-	assert.optionalNumber(params.timeout, "params.timeout");
+	assert.optionalBool(params.socketNoDelay, "params.socketNoDelay");
+	assert.optionalNumber(params.socketTimeout, "params.socketTimeout");
 	if (params.user !== undefined) {
 		assert.string(params.password, "password");
 		auth = params.user + ":" + params.password;
@@ -261,11 +261,11 @@ function connect(params, cb) {
 			});
 		}
 	});
-	if (params.timeout !== undefined) {
-		socket.setTimeout(params.timeout);
+	if (params.socketTimeout !== undefined) {
+		socket.setTimeout(params.socketTimeout);
 	}
-	if (params.noDelay !== undefined) {
-		socket.setNoDelay(params.noDelay);
+	if (params.socketNoDelay !== undefined) {
+		socket.setNoDelay(params.socketNoDelay);
 	}
 	socket.once("error", errorcb);
 }
