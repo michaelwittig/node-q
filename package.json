@@ -9,7 +9,7 @@
 		"itest": "make itest"
 	},
 	"author": "Michael Wittig <post@michaelwittig.info>",
-	"license": "Apache-2.0",
+	"license": "MIT",
 	"dependencies": {
 		"assert-plus": "0.1.5"
 	},
@@ -25,6 +25,6 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/cinovo/node-q.git"
+		"url": "https://github.com/michaelwittig/node-q.git"
 	}
 }
