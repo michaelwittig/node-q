@@ -4,46 +4,6 @@ var events = require("events");
 var util = require("util");
 var assert = require("assert-plus");
 
-var impl, toBuffer, toArrayBuffer;
-try {
-	var memcpy = require("memcpy"); // optional dependency
-	toBuffer = function(ab) {
-		"use strict";
-		var buffer = new Buffer(ab.byteLength);
-		memcpy(buffer, ab);
-		return buffer;
-	};
-	toArrayBuffer = function(buffer) {
-		"use strict";
-		var ab = new ArrayBuffer(buffer.length);
-		memcpy(ab, buffer);
-		return ab;
-	};
-	impl = "memcpy";
-} catch (err) {
-	toBuffer = function(ab) {
-		"use strict";
-		var buffer = new Buffer(ab.byteLength),
-			view = new Uint8Array(ab),
-			i;
-		for (i = 0; i < buffer.length; i += 1) {
-			buffer[i] = view[i];
-		}
-		return buffer;
-	};
-	toArrayBuffer = function(buffer) {
-		"use strict";
-		var ab = new ArrayBuffer(buffer.length),
-			view = new Uint8Array(ab),
-			i;
-		for (i = 0; i < buffer.length; i += 1) {
-			view[i] = buffer[i];
-		}
-		return ab;
-	};
-	impl = "js";
-}
-
 function Connection(socket) {
 	"use strict";
 	events.EventEmitter.call(this);
@@ -72,7 +32,6 @@ Connection.prototype.listen = function() {
 	this.socket.on("data", function(inbuffer) {
 		var buffer,
 			length, // current msg length
-			ab, // array buffer
 			o, // deserialized object
 			err, // deserialize error
 			type,
@@ -94,9 +53,8 @@ Connection.prototype.listen = function() {
 					o = undefined;
 					err = new Error("error " + buffer.toString("ascii", 9, length - 1));
 				} else {
-					ab = toArrayBuffer(buffer.slice(0, length));
 					try {
-						o = libc.deserialize(ab);
+						o = libc.deserialize(buffer);
 						err = undefined;
 					} catch (e) {
 						o = null;
@@ -154,7 +112,6 @@ Connection.prototype.k = function(s, cb) {
 	assert.func(cb, "cb");
 	var self = this,
 		payload,
-		ab, // array buffer
 		b,
 		requestNo = this.nextRequestNo;
 	this.nextRequestNo += 1;
@@ -163,8 +120,7 @@ Connection.prototype.k = function(s, cb) {
 	} else {
 		payload = Array.prototype.slice.call(arguments, 0, arguments.length - 1);
 	}
-	ab = libc.serialize(payload);
-	b = toBuffer(ab);
+	b = libc.serialize(payload);
 	b.writeUInt8(0x1, 1); // MsgType: 1 := sync
 	this.socket.write(b, function() {
 		self.once("response:" + requestNo, function(err, o) {
@@ -178,15 +134,13 @@ Connection.prototype.ks = function(s, cb) {
 	cb = arguments[arguments.length - 1];
 	assert.func(cb, "cb");
 	var payload,
-		ab, // array buffer
 		b;
 	if (arguments.length === 2) {
 		payload = s;
 	} else {
 		payload = Array.prototype.slice.call(arguments, 0, arguments.length - 1);
 	}
-	ab = libc.serialize(payload);
-	b = toBuffer(ab);
+	b = libc.serialize(payload);
 	this.socket.write(b, function() {
 		cb();
 	});
@@ -270,5 +224,3 @@ function connect(params, cb) {
 	socket.once("error", errorcb);
 }
 exports.connect = connect;
-
-exports.impl = impl;

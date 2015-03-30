@@ -92,10 +92,6 @@ con.close(function() {
 
 ## API
 
-### impl
-
-String (e.g. "memcpy" or "js")
-
 ### connect(params, cb)
 
 * `params`: Object

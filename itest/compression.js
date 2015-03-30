@@ -3,7 +3,7 @@ var nodeq = require("../index.js"),
 	async = require("async"),
 	os = require("os");
 
-describe("syncreqres", function() {
+describe("compression", function() {
 	"use strict";
 	var con;
 	before(function(done) {
@@ -20,9 +20,9 @@ describe("syncreqres", function() {
 		});
 	});
 	it("uncompress result", function(done) {
-		con.k("til 100000", function(err, res) {
+		con.k("til 1000000", function(err, res) {
 			if (err) { throw err; }
-			assert.equal(res.length, 100000, "res.length");
+			assert.equal(res.length, 1000000, "res.length");
 			done();
 		});
 	});
