@@ -18,7 +18,8 @@
 		"mocha": "2.2.1",
 		"jshint": "2.6.3",
 		"madge": "0.4.1",
-		"npmedge": "0.2.1"
+		"npmedge": "0.2.1",
+		"moment": "2.9.0"
 	},
 	"repository": {
 		"type": "git",
