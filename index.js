@@ -44,7 +44,6 @@ Connection.prototype.listen = function() {
 		} else {
 			buffer = inbuffer;
 		}
-
 		while (buffer.length >= 8) {
 			length = buffer.readUInt32LE(4);
 			if (buffer.length >= length) {

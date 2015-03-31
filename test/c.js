@@ -1,11 +1,15 @@
 var c = require("../lib/c.js"),
-	moment = require("moment");
+	moment = require("moment"),
 	assert = require("assert-plus");
 
 function hexstr_to_bin(str) {
 	"use strict";
-	var b = new Buffer(str, "hex");
-	return b;
+	return new Buffer(str, "hex");
+}
+
+function bin_to_hexstr(b) {
+	"use strict";
+	return b.toString("hex");
 }
 
 describe("c", function() {
@@ -131,10 +135,16 @@ describe("c", function() {
 		//it("deserialize_time_null_little_test", function() { // 0Nt
 		//	assert.equal(null, c.deserialize(hexstr_to_bin("010000000d000000ed00000080")));
 		//});
-
-
-
-
 	});
-
+	describe("serialize", function() {
+		it("serialize_boolean_little_test", function() { // 1b
+			assert.equal(bin_to_hexstr(c.serialize(true)), "010000000a000000ff01");
+		});
+		it("serialize_float_little_test", function() { // 1.0f
+			assert.equal(bin_to_hexstr(c.serialize(1.0)), "0100000011000000f7000000000000f03f");
+		});
+		it("serialize_symbol_length1_little_test", function() { // `a
+			assert.equal(bin_to_hexstr(c.serialize("`a")), "010000000b000000f56100");
+		});
+	});
 });
