@@ -24,5 +24,8 @@
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/michaelwittig/node-q.git"
+	},
+	"engines": {
+		"node": ">=0.10 <=0.12"
 	}
 }
