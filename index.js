@@ -50,7 +50,7 @@ Connection.prototype.listen = function() {
 				type = buffer.readInt8(8);
 				if (type === -128) { // error type
 					o = undefined;
-					err = new Error("error " + buffer.toString("ascii", 9, length - 1));
+					err = new Error(buffer.toString("ascii", 9, length - 1));
 				} else {
 					try {
 						o = libc.deserialize(buffer);
