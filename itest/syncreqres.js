@@ -28,7 +28,7 @@ describe("syncreqres", function() {
 	it("evaluate malformed q", function(done) {
 		con.k("sxm 1 2 3", function(err) {
 			if (err) {
-				assert.equal(err.message, "error sxm", "err");
+				assert.equal(err.message, "sxm", "err");
 				done();
 			} else {
 				assert.fail("no err");
