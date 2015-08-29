@@ -121,6 +121,47 @@ Q has many more [data types](http://code.kx.com/wiki/Reference/Datatypes) than J
 * <a name="types-footnote2">2</a>: think about running your Node.js process with `TZ=UTC node ...` to run in UTC timezone. q doesn't know timezones.
 * <a name="types-footnote3">3</a>: date is set to `2000-01-01` in the Date object. Only evaluate the time part.
 
+#### dict
+
+```
+q) TODO
+```
+
+becomes
+
+
+```javascript
+TODO
+```
+
+#### list
+
+```
+q) 1 2 3i
+```
+
+becomes
+
+```javascript
+[1, 2, 3]
+```
+
+#### table
+
+```
+q) ([] sym:`a`b`c; size:(1 2 3i))
+```
+
+becomes
+
+```javascript
+[
+	{sym: "a", size: 1},
+	{sym: "b", size: 2},
+	{sym: "c", size: 3}
+]
+```
+
 ### From JavaScript to q (serialization)
 
 TODO

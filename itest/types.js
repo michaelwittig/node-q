@@ -516,4 +516,76 @@ describe("types", function() {
 			});
 		});
 	});
+	describe("dict", function() {
+		it("empty", function(done) {
+			con.k("()!()", function(err, res) {
+				if (err) { throw err; }
+				console.log("res empty", res);
+				assert.deepEqual(res, {}, "res");
+				done();
+			});
+		});
+		it("single", function(done) {
+			con.k("(enlist `a)!(enlist 1i)", function(err, res) {
+				if (err) { throw err; }
+				console.log("res single", res);
+				assert.deepEqual(res, {}, "res");
+				done();
+			});
+		});
+		it("multi", function(done) {
+			con.k("(`a`b`c)!(1 2 3i)", function(err, res) {
+				if (err) { throw err; }
+				console.log("res multi", res);
+				assert.deepEqual(res, {}, "res");
+				done();
+			});
+		});
+	});
+	describe("list", function() {
+		it("empty", function(done) {
+			con.k("()", function(err, res) {
+				if (err) { throw err; }
+				assert.deepEqual(res, [], "res");
+				done();
+			});
+		});
+		it("single", function(done) {
+			con.k("enlist 1i", function(err, res) {
+				if (err) { throw err; }
+				assert.deepEqual(res, [1], "res");
+				done();
+			});
+		});
+		it("multi", function(done) {
+			con.k("1 2 3i", function(err, res) {
+				if (err) { throw err; }
+				assert.deepEqual(res, [1, 2, 3], "res");
+				done();
+			});
+		});
+	});
+	describe("table", function() {
+		it("empty", function(done) {
+			con.k("([] sym:`int$(); size:`$())", function(err, res) {
+				if (err) { throw err; }
+				assert.deepEqual(res, [], "res");
+				done();
+			});
+		});
+		it("single", function(done) {
+			con.k("([] sym:enlist `a; size:enlist 1i)", function(err, res) {
+				if (err) { throw err; }
+				assert.deepEqual(res, [{sym: "a", size: 1}], "res");
+				done();
+			});
+		});
+		it("multi", function(done) {
+			con.k("([] sym:`a`b`c; size:(1 2 3i))", function(err, res) {
+				if (err) { throw err; }
+				assert.deepEqual(res, [{sym: "a", size: 1}, {sym: "b", size: 2}, {sym: "c", size: 3}], "res");
+				done();
+			});
+		});
+	});
 });
