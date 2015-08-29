@@ -156,7 +156,7 @@ becomes [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Glob
 q) ([] sym:`a`b`c; size:(1 2 3i))
 ```
 
-becomes
+becomes [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) of [Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object) per row.
 
 ```javascript
 [
