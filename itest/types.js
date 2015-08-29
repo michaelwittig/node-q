@@ -379,10 +379,50 @@ describe("types", function() {
 		});
 	});
 	describe("date", function() {
-
+		it("null", function(done) {
+			con.k("0Nd", function(err, res) {
+				if (err) { throw err; }
+				assert.equal(res, null, "res");
+				done();
+			});
+		});
+		it("2015.01.01", function(done) {
+			con.k("2015.01.01", function(err, res) {
+				if (err) { throw err; }
+				assert.equal(res.getTime(), new Date(2015, 0, 1, 0, 0, 0, 0).getTime(), "res");
+				done();
+			});
+		});
+		it("1995.01.01", function(done) {
+			con.k("1995.01.01", function(err, res) {
+				if (err) { throw err; }
+				assert.equal(res.getTime(), new Date(1995, 0, 1, 0, 0, 0, 0).getTime(), "res");
+				done();
+			});
+		});
 	});
 	describe("datetime", function() {
-
+		it("null", function(done) {
+			con.k("0Nz", function(err, res) {
+				if (err) { throw err; }
+				assert.equal(res, null, "res");
+				done();
+			});
+		});
+		it("2015.01.01T00:00:00.000", function(done) {
+			con.k("2015.01.01T00:00:00.000", function(err, res) {
+				if (err) { throw err; }
+				assert.equal(res.getTime(), new Date(2015, 0, 1, 0, 0, 0, 0).getTime(), "res");
+				done();
+			});
+		});
+		it("1995.01.01T00:00:00.000", function(done) {
+			con.k("1995.01.01T00:00:00.000", function(err, res) {
+				if (err) { throw err; }
+				assert.equal(res.getTime(), new Date(1995, 0, 1, 0, 0, 0, 0).getTime(), "res");
+				done();
+			});
+		});
 	});
 	describe("timespan", function() {
 
