@@ -333,7 +333,27 @@ describe("types", function() {
 		});
 	});
 	describe("timestamp", function() {
-
+		it("null", function(done) {
+			con.k("0Np", function(err, res) {
+				if (err) { throw err; }
+				assert.equal(res, null, "res");
+				done();
+			});
+		});
+		it("2015.01.01D00:00:00.000000000", function(done) {
+			con.k("2015.01.01D00:00:00.000000000", function(err, res) {
+				if (err) { throw err; }
+				assert.equal(res.getTime(), new Date(2015, 0, 1, 0, 0, 0, 0).getTime(), "res");
+				done();
+			});
+		});
+		it("1995.01.01D00:00:00.000000000", function(done) {
+			con.k("1995.01.01D00:00:00.000000000", function(err, res) {
+				if (err) { throw err; }
+				assert.equal(res.getTime(), new Date(1995, 0, 1, 0, 0, 0, 0).getTime(), "res");
+				done();
+			});
+		});
 	});
 	describe("month", function() {
 
