@@ -112,10 +112,12 @@ Q has many more [data types](http://code.kx.com/wiki/Reference/Datatypes) than J
 | month | [Date](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Date) | [Null](https://developer.mozilla.org/docs/Glossary/Null) | | |
 | date | [Date](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Date) | [Null](https://developer.mozilla.org/docs/Glossary/Null) | | |
 | datetime | [Date](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Date) | [Null](https://developer.mozilla.org/docs/Glossary/Null) | | |
-| timespan | [Date](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Date) | [Null](https://developer.mozilla.org/docs/Glossary/Null) | | |
-| minute | | | | |
-| second | | | | |
-| time | | | | |
+| timespan | [Date](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Date)* | [Null](https://developer.mozilla.org/docs/Glossary/Null) | | |
+| minute | [Date](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Date)* | [Null](https://developer.mozilla.org/docs/Glossary/Null) | | |
+| second | [Date](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Date)* | [Null](https://developer.mozilla.org/docs/Glossary/Null) | | |
+| time | [Date](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Date)* | [Null](https://developer.mozilla.org/docs/Glossary/Null) | | |
+
+* date is set to 2000-01-01 in the Date object. Only evaluate the time part.
 
 ### From JavaScript to q (serialization)
 

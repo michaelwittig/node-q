@@ -448,12 +448,72 @@ describe("types", function() {
 		});
 	});
 	describe("minute", function() {
-
+		it("null", function(done) {
+			con.k("0Nu", function(err, res) {
+				if (err) { throw err; }
+				assert.equal(res, null, "res");
+				done();
+			});
+		});
+		it("00:00", function(done) {
+			con.k("00:00", function(err, res) {
+				if (err) { throw err; }
+				assert.equal(res.getTime(), new Date(2000, 0, 1, 0, 0, 0, 0).getTime(), "res");
+				done();
+			});
+		});
+		it("00:01", function(done) {
+			con.k("00:01", function(err, res) {
+				if (err) { throw err; }
+				assert.equal(res.getTime(), new Date(2000, 0, 1, 0, 1, 0, 0).getTime(), "res");
+				done();
+			});
+		});
 	});
 	describe("second", function() {
-
+		it("null", function(done) {
+			con.k("0Nv", function(err, res) {
+				if (err) { throw err; }
+				assert.equal(res, null, "res");
+				done();
+			});
+		});
+		it("00:00:00", function(done) {
+			con.k("00:00:00", function(err, res) {
+				if (err) { throw err; }
+				assert.equal(res.getTime(), new Date(2000, 0, 1, 0, 0, 0, 0).getTime(), "res");
+				done();
+			});
+		});
+		it("00:00:01", function(done) {
+			con.k("00:00:01", function(err, res) {
+				if (err) { throw err; }
+				assert.equal(res.getTime(), new Date(2000, 0, 1, 0, 0, 1, 0).getTime(), "res");
+				done();
+			});
+		});
 	});
 	describe("time", function() {
-
+		it("null", function(done) {
+			con.k("0Nt", function(err, res) {
+				if (err) { throw err; }
+				assert.equal(res, null, "res");
+				done();
+			});
+		});
+		it("00:00:00.000", function(done) {
+			con.k("00:00:00.000", function(err, res) {
+				if (err) { throw err; }
+				assert.equal(res.getTime(), new Date(2000, 0, 1, 0, 0, 0, 0).getTime(), "res");
+				done();
+			});
+		});
+		it("00:00:01", function(done) {
+			con.k("00:00:00.001", function(err, res) {
+				if (err) { throw err; }
+				assert.equal(res.getTime(), new Date(2000, 0, 1, 0, 0, 0, 1).getTime(), "res");
+				done();
+			});
+		});
 	});
 });
