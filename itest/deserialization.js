@@ -2,7 +2,7 @@ var nodeq = require("../index.js"),
 	assert = require("assert-plus"),
 	async = require("async");
 
-describe("types", function() {
+describe("deserialization", function() {
 	"use strict";
 	var con;
 	before(function(done) {
