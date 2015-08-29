@@ -15,7 +15,7 @@ mocha:
 
 mochait:
 	@echo "mocha (integreation test assumes running kdb+tick process on localhost:5000)"
-	@./node_modules/.bin/mocha -t 5000 itest/*.js
+	@TZ=UTC ./node_modules/.bin/mocha -t 5000 itest/*.js
 	@echo
 
 test: jshint mocha circular

@@ -109,7 +109,7 @@ Q has many more [data types](http://code.kx.com/wiki/Reference/Datatypes) than J
 | char | [String](https://developer.mozilla.org/docs/Glossary/String) | [Null](https://developer.mozilla.org/docs/Glossary/Null) | | |
 | symbol | [String](https://developer.mozilla.org/docs/Glossary/String) | [Null](https://developer.mozilla.org/docs/Glossary/Null) | | |
 | timestamp | [Date](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Date) | [Null](https://developer.mozilla.org/docs/Glossary/Null) | | |
-| month | | | | |
+| month | [Date](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Date) | [Null](https://developer.mozilla.org/docs/Glossary/Null) | | |
 | date | | | | |
 | datetime | | | | |
 | timespan | | | | |
