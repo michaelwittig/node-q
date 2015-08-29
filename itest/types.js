@@ -34,9 +34,22 @@ describe("types", function() {
 			});
 		});
 	});
-	/* TODO type describe("guid", function() {
-
-	});*/
+	describe("guid", function() {
+		it("null", function(done) {
+			con.k("0Ng", function(err, res) {
+				if (err) { throw err; }
+				assert.equal(res, null, "res");
+				done();
+			});
+		});
+		it("random", function(done) {
+			con.k("rand 0Ng", function(err, res) {
+				if (err) { throw err; }
+				assert.string(res, "res");
+				done();
+			});
+		});
+	});
 	describe("byte", function() {
 		it("255", function(done) {
 			con.k("0xff", function(err, res) {
@@ -61,13 +74,27 @@ describe("types", function() {
 		});
 	});
 	describe("short", function() {
-		/* TODO null it("null", function(done) {
+		it("null", function(done) {
 			con.k("0Nh", function(err, res) {
 				if (err) { throw err; }
 				assert.equal(res, null, "res");
 				done();
 			});
-		});*/
+		});
+		it("+infinity", function(done) {
+			con.k("0Wh", function(err, res) {
+				if (err) { throw err; }
+				assert.equal(res, Infinity, "res");
+				done();
+			});
+		});
+		it("-infinity", function(done) {
+			con.k("-0Wh", function(err, res) {
+				if (err) { throw err; }
+				assert.equal(res, -Infinity, "res");
+				done();
+			});
+		});
 		it("1", function(done) {
 			con.k("1h", function(err, res) {
 				if (err) { throw err; }
@@ -91,13 +118,27 @@ describe("types", function() {
 		});
 	});
 	describe("int", function() {
-		/* TODO null it("null", function(done) {
+		it("null", function(done) {
 			con.k("0Ni", function(err, res) {
 				if (err) { throw err; }
 				assert.equal(res, null, "res");
 				done();
 			});
-		});*/
+		});
+		it("+infinity", function(done) {
+			con.k("0Wi", function(err, res) {
+				if (err) { throw err; }
+				assert.equal(res, Infinity, "res");
+				done();
+			});
+		});
+		it("-infinity", function(done) {
+			con.k("-0Wi", function(err, res) {
+				if (err) { throw err; }
+				assert.equal(res, -Infinity, "res");
+				done();
+			});
+		});
 		it("1", function(done) {
 			con.k("1i", function(err, res) {
 				if (err) { throw err; }
@@ -121,13 +162,27 @@ describe("types", function() {
 		});
 	});
 	describe("long", function() {
-		/* TODO null it("null", function(done) {
+		it("null", function(done) {
 			con.k("0Nj", function(err, res) {
 				if (err) { throw err; }
 				assert.equal(res, null, "res");
 				done();
 			});
-		});*/
+		});
+		it("+infinity", function(done) {
+			con.k("0Wj", function(err, res) {
+				if (err) { throw err; }
+				assert.equal(res, Infinity, "res");
+				done();
+			});
+		});
+		it("-infinity", function(done) {
+			con.k("-0Wj", function(err, res) {
+				if (err) { throw err; }
+				assert.equal(res, -Infinity, "res");
+				done();
+			});
+		});
 		it("1", function(done) {
 			con.k("1j", function(err, res) {
 				if (err) { throw err; }
@@ -151,13 +206,27 @@ describe("types", function() {
 		});
 	});
 	describe("real", function() {
-		/* TODO null it("null", function(done) {
+		it("null", function(done) {
 			con.k("0Ne", function(err, res) {
 				if (err) { throw err; }
 				assert.equal(res, null, "res");
 				done();
 			});
-		});*/
+		});
+		it("+infinity", function(done) {
+			con.k("0We", function(err, res) {
+				if (err) { throw err; }
+				assert.equal(res, Infinity, "res");
+				done();
+			});
+		});
+		it("-infinity", function(done) {
+			con.k("-0We", function(err, res) {
+				if (err) { throw err; }
+				assert.equal(res, -Infinity, "res");
+				done();
+			});
+		});
 		it("1", function(done) {
 			con.k("1.0e", function(err, res) {
 				if (err) { throw err; }
@@ -181,13 +250,27 @@ describe("types", function() {
 		});
 	});
 	describe("float", function() {
-		/* TODO null it("null", function(done) {
+		it("null", function(done) {
 			con.k("0Nf", function(err, res) {
 				if (err) { throw err; }
 				assert.equal(res, null, "res");
 				done();
 			});
-		});*/
+		});
+		it("+infinity", function(done) {
+			con.k("0Wf", function(err, res) {
+				if (err) { throw err; }
+				assert.equal(res, Infinity, "res");
+				done();
+			});
+		});
+		it("-infinity", function(done) {
+			con.k("-0Wf", function(err, res) {
+				if (err) { throw err; }
+				assert.equal(res, -Infinity, "res");
+				done();
+			});
+		});
 		it("1", function(done) {
 			con.k("1f", function(err, res) {
 				if (err) { throw err; }
@@ -211,13 +294,13 @@ describe("types", function() {
 		});
 	});
 	describe("char", function() {
-		/* TODO null it("null", function(done) {
+		it("null", function(done) {
 			con.k('" "', function(err, res) {
 				if (err) { throw err; }
 				assert.equal(res, null, "res");
 				done();
 			});
-		});*/
+		});
 		it("a", function(done) {
 			con.k('"a"', function(err, res) {
 				if (err) { throw err; }
@@ -226,23 +309,29 @@ describe("types", function() {
 			});
 		});
 	});
-	/* TODO type describe("symbol", function() {
+	describe("symbol", function() {
 		it("null", function(done) {
-			con.k("`", function(err, res) {
+			con.k("s: `; s", function(err, res) {
 				if (err) { throw err; }
 				assert.equal(res, null, "res");
 				done();
 			});
 		});
 		it("`a", function(done) {
-			con.k("`a", function(err, res) {
-				console.log("res", [err, res]);
+			con.k("s: `a; s", function(err, res) {
 				if (err) { throw err; }
 				assert.equal(res, "a", "res");
 				done();
 			});
 		});
-	});*/
+		it("`abc", function(done) {
+			con.k("s: `abc; s", function(err, res) {
+				if (err) { throw err; }
+				assert.equal(res, "abc", "res");
+				done();
+			});
+		});
+	});
 	describe("timestamp", function() {
 
 	});

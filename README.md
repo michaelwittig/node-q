@@ -90,6 +90,25 @@ con.close(function() {
 });
 ```
 
+## Types
+
+Q has many more [data types](http://code.kx.com/wiki/Reference/Datatypes) than JavaScript. Therefore you need to know how types are converted.
+
+### From q to JavaScript (deserialization)
+
+| q type | JavaScript type | Null | +Infinity | -Infinity |
+| ------ | --------------- | ---- | --------- | --------- |
+| boolean | [Boolean](https://developer.mozilla.org/docs/Glossary/Boolean) | | | |
+| guid | [String](https://developer.mozilla.org/docs/Glossary/String) | [Null](https://developer.mozilla.org/docs/Glossary/String) | | |
+| byte | [Number](https://developer.mozilla.org/docs/Glossary/Number) | | | |
+| short | [Number](https://developer.mozilla.org/docs/Glossary/Number) | [Null](https://developer.mozilla.org/docs/Glossary/String) | [Infinity](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Infinity) | -[Infinity](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Infinity) |
+| int | [Number](https://developer.mozilla.org/docs/Glossary/Number) | [Null](https://developer.mozilla.org/docs/Glossary/String) | [Infinity](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Infinity) | -[Infinity](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Infinity) |
+| long | [Number](https://developer.mozilla.org/docs/Glossary/Number) | [Null](https://developer.mozilla.org/docs/Glossary/String) | [Infinity](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Infinity) | -[Infinity](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Infinity) |
+
+### From JavaScript to q (serialization)
+
+TODO
+
 ## API
 
 ### connect(params, cb)
