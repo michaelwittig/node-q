@@ -166,6 +166,15 @@ becomes
 ]
 ```
 
+You can disable `flipTables` during `connect(params, cb)` to get a table as an Object with an Array per column.
+
+```javascript
+{
+	sym: ["a", "b", "c"],
+	size: [1, 2, 3]
+}
+```
+
 ### From JavaScript to q (serialization)
 
 TODO
@@ -182,6 +191,7 @@ TODO
 	* `socketNoDelay` : Boolean (optional, see http://nodejs.org/api/net.html#net_socket_setnodelay_nodelay)
 	* `socketTimeout`: Number (optional, see http://nodejs.org/api/net.html#net_socket_settimeout_timeout_callback)
 	* `nanos2date`: Boolean (optional, default: true)
+	* `flipTables`: Boolean (optional, default: true)
 * `cb`: Function(`err`, `con`)
 	* `err`: `Error` or `undefined`
 	* `conn`: `Connection` or `undefined`
