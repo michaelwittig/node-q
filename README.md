@@ -108,17 +108,18 @@ Q has many more [data types](http://code.kx.com/wiki/Reference/Datatypes) than J
 | float | [Number](https://developer.mozilla.org/docs/Glossary/Number) | [Null](https://developer.mozilla.org/docs/Glossary/Null) | [Infinity](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Infinity) | -[Infinity](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Infinity) |
 | char | [String](https://developer.mozilla.org/docs/Glossary/String) | [Null](https://developer.mozilla.org/docs/Glossary/Null) | | |
 | symbol | [String](https://developer.mozilla.org/docs/Glossary/String) | [Null](https://developer.mozilla.org/docs/Glossary/Null) | | |
-| timestamp | [Date](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Date) <sup>[1](#types-footnote1)</sup> | [Null](https://developer.mozilla.org/docs/Glossary/Null) | | |
-| month | [Date](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Date) | [Null](https://developer.mozilla.org/docs/Glossary/Null) | | |
-| date | [Date](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Date) | [Null](https://developer.mozilla.org/docs/Glossary/Null) | | |
-| datetime | [Date](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Date) | [Null](https://developer.mozilla.org/docs/Glossary/Null) | | |
-| timespan | [Date](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Date) <sup>[1](#types-footnote1), [2](#types-footnote2)</sup> | [Null](https://developer.mozilla.org/docs/Glossary/Null) | | |
-| minute | [Date](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Date) <sup>[2](#types-footnote2)</sup> | [Null](https://developer.mozilla.org/docs/Glossary/Null) | | |
-| second | [Date](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Date) <sup>[2](#types-footnote2)</sup> | [Null](https://developer.mozilla.org/docs/Glossary/Null) | | |
-| time | [Date](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Date) <sup>[2](#types-footnote2)</sup> | [Null](https://developer.mozilla.org/docs/Glossary/Null) | | |
+| timestamp | [Date](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Date) <sup>[1](#types-footnote1), [2](#types-footnote2)</sup> | [Null](https://developer.mozilla.org/docs/Glossary/Null) | | |
+| month | [Date](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Date) <sup>[2](#types-footnote2)</sup> | [Null](https://developer.mozilla.org/docs/Glossary/Null) | | |
+| date | [Date](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Date) <sup>[2](#types-footnote2)</sup> | [Null](https://developer.mozilla.org/docs/Glossary/Null) | | |
+| datetime | [Date](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Date) <sup>[2](#types-footnote2)</sup> | [Null](https://developer.mozilla.org/docs/Glossary/Null) | | |
+| timespan | [Date](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Date) <sup>[1](#types-footnote1), [2](#types-footnote2), [3](#types-footnote3)</sup> | [Null](https://developer.mozilla.org/docs/Glossary/Null) | | |
+| minute | [Date](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Date) <sup>[2](#types-footnote2), [3](#types-footnote3)</sup> | [Null](https://developer.mozilla.org/docs/Glossary/Null) | | |
+| second | [Date](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Date) <sup>[2](#types-footnote2), [3](#types-footnote3)</sup> | [Null](https://developer.mozilla.org/docs/Glossary/Null) | | |
+| time | [Date](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Date) <sup>[2](#types-footnote2), [3](#types-footnote3)</sup> | [Null](https://developer.mozilla.org/docs/Glossary/Null) | | |
 
-* <a name="types-footnote1">1</a>: q type comes with nano second precission. JavaScript only with milliseconds. You can disable `nanos2date` deserialization during `connect(params, cb)` to get the nano second timestamp as a plain [Number](https://developer.mozilla.org/docs/Glossary/Number)
-* <a name="types-footnote2">2</a>: date is set to 2000-01-01 in the Date object. Only evaluate the time part.
+* <a name="types-footnote1">1</a>: q comes with nanoseconds precision. JavaScript only with milliseconds. You can disable `nanos2date` deserialization during `connect(params, cb)` to get the nanoseconds timestamp as a plain [Number](https://developer.mozilla.org/docs/Glossary/Number).
+* <a name="types-footnote2">2</a>: think about running your Node.js process with `TZ=UTC node ...` to run in UTC timezone. q doesn't know timezones.
+* <a name="types-footnote3">3</a>: date is set to `2000-01-01` in the Date object. Only evaluate the time part.
 
 ### From JavaScript to q (serialization)
 
