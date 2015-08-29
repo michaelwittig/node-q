@@ -425,7 +425,27 @@ describe("types", function() {
 		});
 	});
 	describe("timespan", function() {
-
+		it("null", function(done) {
+			con.k("0Nn", function(err, res) {
+				if (err) { throw err; }
+				assert.equal(res, null, "res");
+				done();
+			});
+		});
+		it("0D00:00:00.000000000", function(done) {
+			con.k("0D00:00:00.000000000", function(err, res) {
+				if (err) { throw err; }
+				assert.equal(res.getTime(), new Date(2000, 0, 1, 0, 0, 0, 0).getTime(), "res");
+				done();
+			});
+		});
+		it("0D00:00:00.000000000", function(done) {
+			con.k("0D00:00:00.000000000", function(err, res) {
+				if (err) { throw err; }
+				assert.equal(res.getTime(), new Date(2000, 0, 1, 0, 0, 0, 0).getTime(), "res");
+				done();
+			});
+		});
 	});
 	describe("minute", function() {
 
