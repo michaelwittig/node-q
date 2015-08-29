@@ -124,14 +124,18 @@ Q has many more [data types](http://code.kx.com/wiki/Reference/Datatypes) than J
 #### dict
 
 ```
-q) TODO
+q) (`a`b`c)!(1 2 3i)
 ```
 
 becomes
 
 
 ```javascript
-TODO
+{
+	a: 1,
+	b: 2,
+	c: 3
+}
 ```
 
 #### list

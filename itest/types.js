@@ -520,7 +520,6 @@ describe("types", function() {
 		it("empty", function(done) {
 			con.k("()!()", function(err, res) {
 				if (err) { throw err; }
-				console.log("res empty", res);
 				assert.deepEqual(res, {}, "res");
 				done();
 			});
@@ -528,16 +527,14 @@ describe("types", function() {
 		it("single", function(done) {
 			con.k("(enlist `a)!(enlist 1i)", function(err, res) {
 				if (err) { throw err; }
-				console.log("res single", res);
-				assert.deepEqual(res, {}, "res");
+				assert.deepEqual(res, {a: 1}, "res");
 				done();
 			});
 		});
 		it("multi", function(done) {
 			con.k("(`a`b`c)!(1 2 3i)", function(err, res) {
 				if (err) { throw err; }
-				console.log("res multi", res);
-				assert.deepEqual(res, {}, "res");
+				assert.deepEqual(res, {a: 1, b: 2, c: 3}, "res");
 				done();
 			});
 		});
