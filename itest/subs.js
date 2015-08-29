@@ -1,3 +1,11 @@
+// QHOME=./q ./q/m32/q -p 5000 
+// q)\l tick/u.q
+// q)trade: ([] sym:`$(); time:`timestamp$())
+// q)trade,:(`a;.z.p)
+// q).u.init[]
+// q).z.ts: {[] .u.pub[`trade;trade]}
+// q)\t 500
+
 var nodeq = require("../index.js"),
 	assert = require("assert-plus");
 

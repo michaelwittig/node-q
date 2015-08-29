@@ -22,7 +22,7 @@ describe("c", function() {
 			assert.equal("0a369037-75d3-b24d-6721-5a1d44d4bed5", c.deserialize(hexstr_to_bin("0100000019000000fe0a36903775d3b24d67215a1d44d4bed5")));
 		});
 		it("deserialize_guid_null_little_test", function() { // 0Ng
-  			assert.equal("00000000-0000-0000-0000-000000000000", c.deserialize(hexstr_to_bin("0100000019000000fe00000000000000000000000000000000")));
+  			assert.equal(null, c.deserialize(hexstr_to_bin("0100000019000000fe00000000000000000000000000000000")));
   		});
 		it("deserialize_byte_little_test", function() { // 0x01
 			assert.equal("1", c.deserialize(hexstr_to_bin("010000000a000000fc01")));
