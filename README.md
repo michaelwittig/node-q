@@ -179,7 +179,6 @@ You can disable `flipTables` during `connect(params, cb)` to get a table as an [
 
 | JavaScript type | q type |
 | --------------- | ------ |
-
 | [Boolean](https://developer.mozilla.org/docs/Glossary/Boolean) | boolean |
 | [String](https://developer.mozilla.org/docs/Glossary/String) starting with ` | symbol |
 | [String](https://developer.mozilla.org/docs/Glossary/String) | list[char] |
