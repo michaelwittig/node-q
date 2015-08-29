@@ -166,7 +166,7 @@ becomes
 ]
 ```
 
-You can disable `flipTables` during `connect(params, cb)` to get a table as an Object with an Array per column.
+You can disable `flipTables` during `connect(params, cb)` to get a table as an [Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object) with an [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) per column.
 
 ```javascript
 {
