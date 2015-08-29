@@ -24,6 +24,56 @@ describe("deserialization", function() {
       done();
     });
   });
+  describe("Null", function() {
+    it("type", function(done) {
+      con.k("testType", null, function(err, res) {
+        if (err) { throw err; }
+        assert.equal(res, 101, "res");
+        done();
+      });
+    });
+    it("value", function(done) {
+      con.k("testValue", null, function(err, res) {
+        if (err) { throw err; }
+        assert.equal(res, null, "res");
+        done();
+      });
+    });
+  });
+  describe("Infinity", function() {
+    describe("+", function() {
+      it("type", function(done) {
+        con.k("testType", Infinity, function(err, res) {
+          if (err) { throw err; }
+          assert.equal(res, -9, "res");
+          done();
+        });
+      });
+      it("value", function(done) {
+        con.k("testValue", Infinity, function(err, res) {
+          if (err) { throw err; }
+          assert.equal(res, Infinity, "res");
+          done();
+        });
+      });
+    });
+    describe("-", function() {
+      it("type", function(done) {
+        con.k("testType", -Infinity, function(err, res) {
+          if (err) { throw err; }
+          assert.equal(res, -9, "res");
+          done();
+        });
+      });
+      it("value", function(done) {
+        con.k("testValue", -Infinity, function(err, res) {
+          if (err) { throw err; }
+          assert.equal(res, -Infinity, "res");
+          done();
+        });
+      });
+    });
+  });
   describe("Boolean", function() {
     it("type", function(done) {
       con.k("testType", true, function(err, res) {
@@ -106,7 +156,7 @@ describe("deserialization", function() {
       });
     });
   });
-  /*describe("Date", function() {
+  /* TODO fix date serialization describe("Date", function() {
     describe("year 2015", function() {
       it("type", function(done) {
         con.k("testType", new Date(2015, 0, 1, 0, 0, 0, 0), function(err, res) {
@@ -173,19 +223,105 @@ describe("deserialization", function() {
     });
   });
   describe("Array", function() {
-    it("type", function(done) {
-      con.k("testType", [1, 2, 3], function(err, res) {
-        if (err) { throw err; }
-        assert.equal(res, 9, "res");
-        done();
+    describe("Boolean", function() {
+      it("type", function(done) {
+        con.k("testType", [true, false, true], function(err, res) {
+          if (err) { throw err; }
+          assert.equal(res, 1, "res");
+          done();
+        });
+      });
+      it("value", function(done) {
+        con.k("testValue", [true, false, true], function(err, res) {
+          if (err) { throw err; }
+          assert.deepEqual(res, [true, false, true], "res");
+          done();
+        });
       });
     });
-    it("value", function(done) {
-      con.k("testValue", [1, 2, 3], function(err, res) {
-        if (err) { throw err; }
-        assert.deepEqual(res, [1, 2, 3], "res");
-        done();
+    describe("String", function() {
+      describe("starting with `", function() {
+        it("type", function(done) {
+          con.k("testType", ["`a", "`b", "`c"], function(err, res) {
+            if (err) { throw err; }
+            assert.equal(res, 11, "res");
+            done();
+          });
+        });
+        it("value", function(done) {
+          con.k("testValue", ["`a", "`b", "`c"], function(err, res) {
+            if (err) { throw err; }
+            assert.deepEqual(res, ["a", "b", "c"], "res");
+            done();
+          });
+        });
+      });
+      describe("single char", function() {
+        it("type", function(done) {
+          con.k("testType", ["a", "b", "c"], function(err, res) {
+            if (err) { throw err; }
+            assert.equal(res, 0, "res");
+            done();
+          });
+        });
+        it("value", function(done) {
+          con.k("testValue", ["a", "b", "c"], function(err, res) {
+            if (err) { throw err; }
+            assert.deepEqual(res, ["a", "b", "c"], "res");
+            done();
+          });
+        });
+      });
+      describe("string", function() {
+        it("type", function(done) {
+          con.k("testType", ["abc", "bcd", "cde"], function(err, res) {
+            if (err) { throw err; }
+            assert.equal(res, 0, "res");
+            done();
+          });
+        });
+        it("value", function(done) {
+          con.k("testValue", ["abc", "bcd", "cde"], function(err, res) {
+            if (err) { throw err; }
+            assert.deepEqual(res, ["abc", "bcd", "cde"], "res");
+            done();
+          });
+        });
       });
     });
+    describe("Number", function() {
+      it("type", function(done) {
+        con.k("testType", [1, 2, 3], function(err, res) {
+          if (err) { throw err; }
+          assert.equal(res, 9, "res");
+          done();
+        });
+      });
+      it("value", function(done) {
+        con.k("testValue", [1, 2, 3], function(err, res) {
+          if (err) { throw err; }
+          assert.deepEqual(res, [1, 2, 3], "res");
+          done();
+        });
+      });
+    });
+    /* TODO fix date serialization describe("Date", function() {
+      it("type", function(done) {
+        con.k("testType", [new Date(2015, 0, 1, 0, 0, 0, 0), new Date(2000, 0, 1, 0, 0, 0, 0), new Date(1995, 0, 1, 0, 0, 0, 0)], function(err, res) {
+          if (err) { throw err; }
+          assert.equal(res, 15, "res");
+          done();
+        });
+      });
+      it("value", function(done) {
+        con.k("testValue", [new Date(2015, 0, 1, 0, 0, 0, 0), new Date(2000, 0, 1, 0, 0, 0, 0), new Date(1995, 0, 1, 0, 0, 0, 0)], function(err, res) {
+          if (err) { throw err; }
+          assert.deepEqual(res[0].getTime(), new Date(2015, 0, 1, 0, 0, 0, 0).getTime(), "res[0]");
+          assert.deepEqual(res[1].getTime(), new Date(2000, 0, 1, 0, 0, 0, 0).getTime(), "res[1]");
+          assert.deepEqual(res[2].getTime(), new Date(1995, 0, 1, 0, 0, 0, 0).getTime(), "res[2]");
+          done();
+        });
+      });
+    });*/
   });
 });

@@ -127,7 +127,7 @@ Q has many more [data types](http://code.kx.com/wiki/Reference/Datatypes) than J
 q) (`a`b`c)!(1 2 3i)
 ```
 
-becomes
+becomes [Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)
 
 
 ```javascript
@@ -144,7 +144,7 @@ becomes
 q) 1 2 3i
 ```
 
-becomes
+becomes [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)
 
 ```javascript
 [1, 2, 3]
@@ -177,7 +177,19 @@ You can disable `flipTables` during `connect(params, cb)` to get a table as an [
 
 ### From JavaScript to q (serialization)
 
-TODO
+| JavaScript type | q type |
+| --------------- | ------ |
+
+| [Boolean](https://developer.mozilla.org/docs/Glossary/Boolean) | boolean |
+| [String](https://developer.mozilla.org/docs/Glossary/String) starting with ` | symbol |
+| [String](https://developer.mozilla.org/docs/Glossary/String) | list[char] |
+| [Number](https://developer.mozilla.org/docs/Glossary/Number) | float |
+| [Date](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Date) | TODO |
+| [Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object) | dict |
+| [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)[*] | list[*] |
+| [Null](https://developer.mozilla.org/docs/Glossary/Null) | unary primitive |
+| [Infinity](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Infinity) | float |
+| -[Infinity](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Infinity) | float |
 
 ## API
 
