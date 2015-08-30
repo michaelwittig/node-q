@@ -45,7 +45,7 @@ con.k("sum 1 2 3", function(err, res) {
 });
 ```
 
-### Execute function with parameter and receive result
+### Execute function with one parameter and receive result
 
 ```javascript
 con.k("sum", [1, 2, 3], function(err, res) {
@@ -54,7 +54,7 @@ con.k("sum", [1, 2, 3], function(err, res) {
 });
 ```
 
-### Execute function with parameters and receive result
+### Execute function with two parameters and receive result
 
 ```javascript
 con.k("cor", [1, 2, 3], [4, 5, 6], function(err, res) {
@@ -101,7 +101,7 @@ con.close(function() {
 
 ## Types
 
-Q has many more [data types](http://code.kx.com/wiki/Reference/Datatypes) than JavaScript. Therefore you need to know how types are converted.
+q has more [data types](http://code.kx.com/wiki/Reference/Datatypes) than JavaScript. Therefore you need to know how types are converted.
 
 ### From q to JavaScript (deserialization)
 
@@ -266,7 +266,7 @@ Async request.
 If you use kdb+tick and subscribe like `con.ks(".u.sub[`;`]", function(err) { throw err; })` you will receive all Updates via `upd` Event.
 
 * `table`: String (e.g. trades)
-* `data`: Object (table represented in JavaScript are Arrays of Objects)
+* `data`: Object (table represented in JavaScript as [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) of [Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object))
 
 ##### error(err)
 
