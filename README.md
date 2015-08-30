@@ -183,7 +183,7 @@ You can disable `flipTables` during `connect(params, cb)` to get a table as an [
 | [String](https://developer.mozilla.org/docs/Glossary/String) starting with ` | symbol |
 | [String](https://developer.mozilla.org/docs/Glossary/String) | list[char] |
 | [Number](https://developer.mozilla.org/docs/Glossary/Number) | float |
-| [Date](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Date) | TODO |
+| [Date](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Date) | datetime |
 | [Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object) | dict |
 | [Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)[*] | list[*] |
 | [Null](https://developer.mozilla.org/docs/Glossary/Null) | unary primitive |

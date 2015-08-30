@@ -156,7 +156,7 @@ describe("deserialization", function() {
       });
     });
   });
-  /* TODO fix date serialization describe("Date", function() {
+  describe("Date", function() {
     describe("year 2015", function() {
       it("type", function(done) {
         con.k("testType", new Date(2015, 0, 1, 0, 0, 0, 0), function(err, res) {
@@ -205,7 +205,7 @@ describe("deserialization", function() {
         });
       });
     });
-  });*/
+  });
   describe("Object", function() {
     it("type", function(done) {
       con.k("testType", {a: 1, b: 2, c: 3}, function(err, res) {
@@ -305,7 +305,7 @@ describe("deserialization", function() {
         });
       });
     });
-    /* TODO fix date serialization describe("Date", function() {
+    describe("Date", function() {
       it("type", function(done) {
         con.k("testType", [new Date(2015, 0, 1, 0, 0, 0, 0), new Date(2000, 0, 1, 0, 0, 0, 0), new Date(1995, 0, 1, 0, 0, 0, 0)], function(err, res) {
           if (err) { throw err; }
@@ -322,6 +322,6 @@ describe("deserialization", function() {
           done();
         });
       });
-    });*/
+    });
   });
 });
