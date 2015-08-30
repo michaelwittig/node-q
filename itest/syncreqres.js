@@ -42,6 +42,13 @@ describe("syncreqres", function() {
 			done();
 		});
 	});
+	it("evaluate function with two parameters", function(done) {
+		con.k("cor", [1, 2, 3], [4, 5, 6], function(err, res) {
+			if (err) { throw err; }
+			assert.equal(res, 1, "res");
+			done();
+		});
+	});
 	it("mass requests", function(done) {
 		async.map([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], function(i, cb) {
 			con.k("sum", [i, i], cb);

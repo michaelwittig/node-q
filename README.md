@@ -4,7 +4,7 @@
 
 # node-q
 
-Q interfacing with Node.js based on [c.js](http://kx.com/q/c/c.js). Supports [decompression](http://code.kx.com/wiki/Reference/ipcprotocol#Compression).
+Q interfacing with Node.js. Supports [decompression](http://code.kx.com/wiki/Reference/ipcprotocol#Compression). Can deserialize all q data types (including `guid`) to JavaScript. Can serialize all JavaScript data types to q.
 
 ## Installation
 
@@ -41,16 +41,25 @@ nodeq.connect({host: "localhost", port: "localhost", 5000, user: "user", passwor
 ```javascript
 con.k("sum 1 2 3", function(err, res) {
 	if (err) throw err;
-	console.log("result", res);
+	console.log("result", res); // 6
+});
+```
+
+### Execute function with parameter and receive result
+
+```javascript
+con.k("sum", [1, 2, 3], function(err, res) {
+	if (err) throw err;
+	console.log("result", res); // 6
 });
 ```
 
 ### Execute function with parameters and receive result
 
 ```javascript
-con.k("sum", [1, 2, 3], function(err, res) {
+con.k("cor", [1, 2, 3], [4, 5, 6], function(err, res) {
 	if (err) throw err;
-	console.log("result", res);
+	console.log("result", res); // 1
 });
 ```
 
