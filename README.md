@@ -212,6 +212,7 @@ You can disable `flipTables` during `connect(params, cb)` to get a table as an [
 	* `socketTimeout`: Number (optional, see http://nodejs.org/api/net.html#net_socket_settimeout_timeout_callback)
 	* `nanos2date`: Boolean (optional, default: true)
 	* `flipTables`: Boolean (optional, default: true)
+	* `emptyChar2null`: Boolean (optional, default: true)
 * `cb`: Function(`err`, `con`)
 	* `err`: `Error` or `undefined`
 	* `conn`: `Connection` or `undefined`

@@ -60,8 +60,14 @@ describe("c", function() {
 		it("deserialize_char_little_test", function() { // "a"
 			assert.equal("a", c.deserialize(hexstr_to_bin("010000000a000000f661")));
 		});
-		it("deserialize_char_null_little_test", function() { // " "
-			assert.equal(null, c.deserialize(hexstr_to_bin("010000000a000000f620"))); // no null value specified
+		it("deserialize_char_null_little_test default behavior", function() { // " "
+			assert.equal(null, c.deserialize(hexstr_to_bin("010000000a000000f620")));
+		});
+		it("deserialize_char_null_little_test emptyChar2null:=true", function() { // " "
+			assert.equal(null, c.deserialize(hexstr_to_bin("010000000a000000f620"), undefined, undefined, true));
+		});
+		it("deserialize_char_null_little_test emptyChar2null:=false", function() { // " "
+			assert.equal(" ", c.deserialize(hexstr_to_bin("010000000a000000f620"), undefined, undefined, false));
 		});
 		it("deserialize_symbol_length1_little_test", function() { // `a
 			assert.equal("a", c.deserialize(hexstr_to_bin("010000000b000000f56100")));
