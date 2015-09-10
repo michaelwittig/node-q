@@ -115,7 +115,7 @@ q has more [data types](http://code.kx.com/wiki/Reference/Datatypes) than JavaSc
 | long | [Number](https://developer.mozilla.org/docs/Glossary/Number) | [Null](https://developer.mozilla.org/docs/Glossary/Null) | [Infinity](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Infinity) | -[Infinity](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Infinity) |
 | real | [Number](https://developer.mozilla.org/docs/Glossary/Number) | [Null](https://developer.mozilla.org/docs/Glossary/Null) | [Infinity](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Infinity) | -[Infinity](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Infinity) |
 | float | [Number](https://developer.mozilla.org/docs/Glossary/Number) | [Null](https://developer.mozilla.org/docs/Glossary/Null) | [Infinity](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Infinity) | -[Infinity](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Infinity) |
-| char | [String](https://developer.mozilla.org/docs/Glossary/String) | [Null](https://developer.mozilla.org/docs/Glossary/Null) | | |
+| char | [String](https://developer.mozilla.org/docs/Glossary/String) | [Null](https://developer.mozilla.org/docs/Glossary/Null) <sup>[4](#types-footnote4)</sup> | | |
 | symbol | [String](https://developer.mozilla.org/docs/Glossary/String) | [Null](https://developer.mozilla.org/docs/Glossary/Null) | | |
 | timestamp | [Date](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Date) <sup>[1](#types-footnote1), [2](#types-footnote2)</sup> | [Null](https://developer.mozilla.org/docs/Glossary/Null) | | |
 | month | [Date](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Date) <sup>[2](#types-footnote2)</sup> | [Null](https://developer.mozilla.org/docs/Glossary/Null) | | |
@@ -129,6 +129,7 @@ q has more [data types](http://code.kx.com/wiki/Reference/Datatypes) than JavaSc
 * <a name="types-footnote1">1</a>: q comes with nanoseconds precision. JavaScript only with milliseconds. You can disable `nanos2date` deserialization during `connect(params, cb)` to get the nanoseconds timestamp as a plain [Number](https://developer.mozilla.org/docs/Glossary/Number).
 * <a name="types-footnote2">2</a>: think about running your Node.js process with `TZ=UTC node ...` to run in UTC timezone. q doesn't know timezones.
 * <a name="types-footnote3">3</a>: date is set to `2000-01-01` in the Date object. Only evaluate the time part.
+* <a name="types-footnote4">4</a>: You can disable `emptyChar2null` deserialization during `connect(params, cb)` to keep the empty char.
 
 #### dict
 
@@ -212,6 +213,7 @@ You can disable `flipTables` during `connect(params, cb)` to get a table as an [
 	* `socketTimeout`: Number (optional, see http://nodejs.org/api/net.html#net_socket_settimeout_timeout_callback)
 	* `nanos2date`: Boolean (optional, default: true)
 	* `flipTables`: Boolean (optional, default: true)
+	* `emptyChar2null`: Boolean (optional, default: true)
 * `cb`: Function(`err`, `con`)
 	* `err`: `Error` or `undefined`
 	* `conn`: `Connection` or `undefined`
