@@ -1,4 +1,3 @@
-// QHOME=./q ./q/m32/q -p 5000 
 var nodeq = require("../index.js"),
 	async = require("async"),
 	assert = require("assert-plus");
