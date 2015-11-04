@@ -1,6 +1,5 @@
 var nodeq = require("../index.js"),
-  assert = require("assert-plus"),
-  async = require("async");
+  assert = require("assert");
 
 describe("emptyChar2null", function() {
   "use strict";

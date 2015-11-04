@@ -1,5 +1,5 @@
 var nodeq = require("../index.js"),
-	assert = require("assert-plus"),
+	assert = require("assert"),
 	async = require("async");
 
 describe("syncreqres", function() {
