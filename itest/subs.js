@@ -1,6 +1,6 @@
 var nodeq = require("../index.js"),
 	async = require("async"),
-	assert = require("assert-plus");
+	assert = require("assert");
 
 describe("subs", function() {
 	"use strict";
@@ -31,8 +31,8 @@ describe("subs", function() {
 	});
 	it("subscribe all", function(done) {
 		con.once("upd", function(table, data) {
-			assert.string(table, "table");
-			assert.arrayOfObject(data, "data");
+			assert.equal(typeof table, "string", "table");
+			assert.equal(Array.isArray(data), true, "data");
 			done();
 		});
 		con.ks(".u.sub[`;`]", function(err) {

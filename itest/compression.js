@@ -1,6 +1,5 @@
 var nodeq = require("../index.js"),
-	assert = require("assert-plus"),
-	async = require("async"),
+	assert = require("assert"),
 	os = require("os");
 
 describe("compression", function() {

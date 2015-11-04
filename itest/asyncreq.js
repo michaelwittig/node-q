@@ -1,5 +1,4 @@
-var nodeq = require("../index.js"),
-	assert = require("assert-plus");
+var nodeq = require("../index.js");
 
 describe("asyncreq", function() {
 	"use strict";

@@ -2,7 +2,7 @@ var libc = require("./lib/c.js");
 var net = require("net");
 var events = require("events");
 var util = require("util");
-var assert = require("assert-plus");
+var assert = require("./lib/assert.js");
 
 function Connection(socket, nanos2date, flipTables, emptyChar2null) {
 	"use strict";

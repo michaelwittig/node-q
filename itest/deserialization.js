@@ -1,6 +1,5 @@
 var nodeq = require("../index.js"),
-	assert = require("assert-plus"),
-	async = require("async");
+	assert = require("assert");
 
 describe("deserialization", function() {
 	"use strict";
@@ -45,7 +44,7 @@ describe("deserialization", function() {
 		it("random", function(done) {
 			con.k("rand 0Ng", function(err, res) {
 				if (err) { throw err; }
-				assert.string(res, "res");
+				assert.equal(typeof res, "string", "res");
 				done();
 			});
 		});
