@@ -87,6 +87,15 @@ describe("c", function() {
 		it("deserialize_symbol_length5_little_test", function() { // `abcde
 			assert.equal(c.deserialize(hexstr_to_bin("010000000f000000f5616263646500")), "abcde");
 		});
+		it("deserialize_symbol_unicode_little_test", function() { // `$"你"
+			assert.equal(c.deserialize(hexstr_to_bin("010000000d000000f5e4bda000")), "你");
+		});
+		it("deserialize_string_unicode_little_test", function() { // "ab"
+			assert.equal(c.deserialize(hexstr_to_bin("01000000100000000a00020000006162")), "ab");
+		});
+		it("deserialize_string_unicode_little_test", function() { // "你好"
+			assert.equal(c.deserialize(hexstr_to_bin("01000000140000000a0006000000e4bda0e5a5bd")), "你好");
+		});
 		it("deserialize_timestamp_little_test", function() { // 2014.06.23D11:34:39.412547000
 			assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f4b84d1d352d045706")).getTime(), moment.utc("2014.06.23 11:34:39.412547000", "YYYY.MM.DD HH:mm:ss.SSS").toDate().getTime());
 		});
@@ -151,6 +160,9 @@ describe("c", function() {
 		});
 		it("serialize_symbol_length1_little_test", function() { // `a
 			assert.equal(bin_to_hexstr(c.serialize("`a")), "010000000b000000f56100");
+		});
+		it("serialize_symbol_unicode_little_test", function() { // `你
+			assert.equal(bin_to_hexstr(c.serialize("`你")), "010000000d000000f5e4bda000");
 		});
 	});
 });
