@@ -13,6 +13,11 @@ mocha:
 	@./node_modules/.bin/mocha test/*.js
 	@echo
 
+coverage:
+	@echo "cover"
+	@./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha test/*
+	@echo
+
 mochait:
 	@echo "mocha (integreation test assumes running kdb+tick process on localhost:5000)"
 	@TZ=UTC ./node_modules/.bin/mocha -t 5000 itest/*.js
