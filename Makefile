@@ -2,11 +2,11 @@ default: test
 
 jshint:
 	@echo "jshint"
-	@find . -name "*.js" -not -path "./node_modules/*" -print0 | xargs -0 ./node_modules/.bin/jshint
+	@find . -name "*.js" -print0 | xargs -0 ./node_modules/.bin/jshint
 
 circular:
 	@echo "circular"
-	@./node_modules/.bin/madge --circular --format amd .
+	@./node_modules/.bin/madge --circular --format amd --exclude 'madge|source-map' .
 
 mocha:
 	@echo "mocha (unit test)"
