@@ -130,7 +130,7 @@ q has more [data types](http://code.kx.com/wiki/Reference/Datatypes) than JavaSc
 * <a name="types-footnote2">2</a>: think about running your Node.js process with `TZ=UTC node ...` to run in UTC timezone. q doesn't know timezones.
 * <a name="types-footnote3">3</a>: date is set to `2000-01-01` in the Date object. Only evaluate the time part.
 * <a name="types-footnote4">4</a>: You can disable `emptyChar2null` deserialization during `connect(params, cb)` to keep the empty char.
-* <a name="types-footnote5">5</a>: You can enable `long2bignum` deserialization during `connect(params, cb)` to represent longs ans [bignum](https://www.npmjs.com/package/bignum)s.
+* <a name="types-footnote5">5</a>: You can enable `long2bignum` deserialization during `connect(params, cb)` to represent longs as [bignum](https://www.npmjs.com/package/bignum).
 
 #### dict
 
