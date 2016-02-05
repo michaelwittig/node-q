@@ -1,6 +1,7 @@
 var c = require("../lib/c.js"),
 	moment = require("moment"),
-	assert = require("assert");
+	assert = require("assert"),
+	bignum = require("bignum");
 
 function hexstr_to_bin(str) {
 	"use strict";
@@ -39,12 +40,32 @@ describe("c", function() {
 		it("deserialize_integer_null_little_test", function() { // 0Ni
 			assert.equal(c.deserialize(hexstr_to_bin("010000000d000000fa00000080")), null);
 		});
-		it("deserialize_long_little_test", function() { // 1j
-			assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f90100000000000000")), 1);
-		});
-		it("deserialize_long_null_little_test", function() { // 0Nj
-			assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f90000000000000080")), null);
-		});
+		describe("long2bignum", function() {
+			describe("default", function() {
+				it("deserialize_long_little_test", function() { // 1j
+					assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f90100000000000000")), 1);
+				});
+				it("deserialize_long_null_little_test", function() { // 0Nj
+					assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f90000000000000080")), null);
+				});
+			});
+			describe("true", function() {
+				it("deserialize_long_little_test", function() { // 1j
+					assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f90100000000000000"), undefined, undefined, undefined, true).toNumber(), 1);
+				});
+				it("deserialize_long_null_little_test", function() { // 0Nj
+					assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f90000000000000080"), undefined, undefined, undefined, true), null);
+				});
+			});
+			describe("false", function() {
+				it("deserialize_long_little_test", function() { // 1j
+					assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f90100000000000000"), undefined, undefined, undefined, false), 1);
+				});
+				it("deserialize_long_null_little_test", function() { // 0Nj
+					assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f90000000000000080"), undefined, undefined, undefined, false), null);
+				});
+			});
+		})
 		it("deserialize_real_little_test", function() { // 1.0e
 			assert.equal(c.deserialize(hexstr_to_bin("010000000d000000f80000803f")), 1.0);
 		});

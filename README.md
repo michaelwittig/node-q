@@ -112,7 +112,7 @@ q has more [data types](http://code.kx.com/wiki/Reference/Datatypes) than JavaSc
 | byte | [Number](https://developer.mozilla.org/docs/Glossary/Number) | | | |
 | short | [Number](https://developer.mozilla.org/docs/Glossary/Number) | [Null](https://developer.mozilla.org/docs/Glossary/Null) | [Infinity](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Infinity) | -[Infinity](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Infinity) |
 | int | [Number](https://developer.mozilla.org/docs/Glossary/Number) | [Null](https://developer.mozilla.org/docs/Glossary/Null) | [Infinity](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Infinity) | -[Infinity](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Infinity) |
-| long | [Number](https://developer.mozilla.org/docs/Glossary/Number) | [Null](https://developer.mozilla.org/docs/Glossary/Null) | [Infinity](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Infinity) | -[Infinity](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Infinity) |
+| long | [Number](https://developer.mozilla.org/docs/Glossary/Number) <sup>[5](#types-footnote5)</sup> | [Null](https://developer.mozilla.org/docs/Glossary/Null) | [Infinity](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Infinity) | -[Infinity](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Infinity) |
 | real | [Number](https://developer.mozilla.org/docs/Glossary/Number) | [Null](https://developer.mozilla.org/docs/Glossary/Null) | [Infinity](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Infinity) | -[Infinity](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Infinity) |
 | float | [Number](https://developer.mozilla.org/docs/Glossary/Number) | [Null](https://developer.mozilla.org/docs/Glossary/Null) | [Infinity](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Infinity) | -[Infinity](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Infinity) |
 | char | [String](https://developer.mozilla.org/docs/Glossary/String) | [Null](https://developer.mozilla.org/docs/Glossary/Null) <sup>[4](#types-footnote4)</sup> | | |
@@ -130,6 +130,7 @@ q has more [data types](http://code.kx.com/wiki/Reference/Datatypes) than JavaSc
 * <a name="types-footnote2">2</a>: think about running your Node.js process with `TZ=UTC node ...` to run in UTC timezone. q doesn't know timezones.
 * <a name="types-footnote3">3</a>: date is set to `2000-01-01` in the Date object. Only evaluate the time part.
 * <a name="types-footnote4">4</a>: You can disable `emptyChar2null` deserialization during `connect(params, cb)` to keep the empty char.
+* <a name="types-footnote5">5</a>: You can enable `long2bignum` deserialization during `connect(params, cb)` to represent longs ans [bignum](https://www.npmjs.com/package/bignum)s.
 
 #### dict
 
@@ -214,6 +215,7 @@ You can disable `flipTables` during `connect(params, cb)` to get a table as an [
 	* `nanos2date`: Boolean (optional, default: true)
 	* `flipTables`: Boolean (optional, default: true)
 	* `emptyChar2null`: Boolean (optional, default: true)
+	* `long2bignum`: Boolean (optional, default: false)
 * `cb`: Function(`err`, `con`)
 	* `err`: `Error` or `undefined`
 	* `conn`: `Connection` or `undefined`
