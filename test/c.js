@@ -287,19 +287,59 @@ describe("c", function() {
 					});
 				});
 			});
-			// FIXME test deserialize list
 			describe("list", function() {
-				describe("string", function() {
+				// TODO test deserialize list for every type
+				describe("char", function() {
 					it("ab", function() { // "ab"
-						assert.equal(c.deserialize(hexstr_to_bin("01000000100000000a00020000006162")), "ab");
+						assert.deepEqual(c.deserialize(hexstr_to_bin("01000000100000000a00020000006162")), "ab");
 					});
 					it("unicode", function() { // "你好"
-						assert.equal(c.deserialize(hexstr_to_bin("01000000140000000a0006000000e4bda0e5a5bd")), "你好");
+						assert.deepEqual(c.deserialize(hexstr_to_bin("01000000140000000a0006000000e4bda0e5a5bd")), "你好");
 					});
 				});
 			});
-			// FIXME test deserialize dict
-			// FIXME test deserialize table with/without flipTables option
+			describe("dict", function() {
+				it("empty", function() {
+					assert.deepEqual(c.deserialize(hexstr_to_bin("010000001500000063000000000000000000000000")), {});
+				});
+				it("single entry", function() {
+					assert.deepEqual(c.deserialize(hexstr_to_bin("010000001f000000630b000100000061000700010000000100000000000000")), {a: 1});
+				});
+				it("multiple entries same type", function() {
+					assert.deepEqual(c.deserialize(hexstr_to_bin("0100000033000000630b0003000000610062006300070003000000010000000000000002000000000000000300000000000000")), {a: 1, b: 2, c: 3});
+				});
+				it("multiple entries different types", function() {
+					assert.deepEqual(c.deserialize(hexstr_to_bin("010000002f000000630b0003000000610062006300000003000000f90100000000000000ff01f70000000000000840")), {a: 1, b: true, c: 3});
+				});
+			});
+			describe("table", function() {
+				describe("flipTables", function() {
+					describe("default", function() {
+						it("multiple rows", function() {
+							assert.deepEqual(c.deserialize(hexstr_to_bin("01000000620000006200630b0003000000610062006300000003000000070003000000010000000000000002000000000000000300000000000000010003000000010001090003000000000000000000f03f00000000000000400000000000000840")), [{a: 1, b: true, c: 1}, {a: 2, b: false, c: 2}, {a: 3, b: true, c: 3}]);
+						});
+						it("no rows", function() {
+							assert.deepEqual(c.deserialize(hexstr_to_bin("010000002f0000006200630b0003000000610062006300000003000000070000000000010000000000090000000000")), []);
+						});
+					});
+					describe("true", function() {
+						it("multiple rows", function() {
+							assert.deepEqual(c.deserialize(hexstr_to_bin("01000000620000006200630b0003000000610062006300000003000000070003000000010000000000000002000000000000000300000000000000010003000000010001090003000000000000000000f03f00000000000000400000000000000840"), undefined, true), [{a: 1, b: true, c: 1}, {a: 2, b: false, c: 2}, {a: 3, b: true, c: 3}]);
+						});
+						it("no rows", function() {
+							assert.deepEqual(c.deserialize(hexstr_to_bin("010000002f0000006200630b0003000000610062006300000003000000070000000000010000000000090000000000"), undefined, true), []);
+						});
+					});
+					describe("false", function() {
+						it("multiple rows", function() {
+							assert.deepEqual(c.deserialize(hexstr_to_bin("01000000620000006200630b0003000000610062006300000003000000070003000000010000000000000002000000000000000300000000000000010003000000010001090003000000000000000000f03f00000000000000400000000000000840"), undefined, false), {a: [1, 2, 3], b: [true, false, true], c: [1, 2, 3]});
+						});
+						it("no rows", function() {
+							assert.deepEqual(c.deserialize(hexstr_to_bin("010000002f0000006200630b0003000000610062006300000003000000070000000000010000000000090000000000"), undefined, false), {a: [], b: [], c: []});
+						});
+					});
+				});
+			});
 		});
 	});
 	describe("serialize", function() {
