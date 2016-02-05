@@ -207,7 +207,7 @@ You can disable `flipTables` during `connect(params, cb)` to get a table as an [
 
 If you want to explicitly serialize a JavaScript type as a q type you need to use the typed API.
 
-TODO
+FIXME add docs for typed API
 
 ## API
 
