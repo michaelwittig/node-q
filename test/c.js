@@ -19,207 +19,288 @@ function bin_to_hexstr(b) {
 describe("c", function() {
 	"use strict";
 	describe("deserialize", function() {
-		it("deserialize_boolean_little_test", function() { // 1b
-			assert.equal(c.deserialize(hexstr_to_bin("010000000a000000ff01")), true);
-		});
-		it("deserialize_guid_little_test", function() { // 0a369037-75d3-b24d-6721-5a1d44d4bed5
-			assert.equal(c.deserialize(hexstr_to_bin("0100000019000000fe0a36903775d3b24d67215a1d44d4bed5")), "0a369037-75d3-b24d-6721-5a1d44d4bed5");
-		});
-		it("deserialize_guid_null_little_test", function() { // 0Ng
-			assert.equal(c.deserialize(hexstr_to_bin("0100000019000000fe00000000000000000000000000000000")), null);
-		});
-		it("deserialize_byte_little_test", function() { // 0x01
-			assert.equal(c.deserialize(hexstr_to_bin("010000000a000000fc01")), "1");
-		});
-		it("deserialize_short_little_test", function() { // 1h
-			assert.equal(c.deserialize(hexstr_to_bin("010000000b000000fb0100")), 1);
-		});
-		it("deserialize_short_null_little_test", function() { // 0Nh
-			assert.equal(c.deserialize(hexstr_to_bin("010000000b000000fb0080")), null);
-		});
-		it("deserialize_integer_little_test", function() { // 1i
-			assert.equal(c.deserialize(hexstr_to_bin("010000000d000000fa01000000")), 1);
-		});
-		it("deserialize_integer_null_little_test", function() { // 0Ni
-			assert.equal(c.deserialize(hexstr_to_bin("010000000d000000fa00000080")), null);
-		});
-		describe("long2bignum", function() {
-			describe("default", function() {
-				it("deserialize_long_little_test", function() { // 1j
-					assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f90100000000000000")), 1);
+		describe("little", function() {
+			describe("primitives", function() {
+				it("boolean", function() { // 1b
+					assert.equal(c.deserialize(hexstr_to_bin("010000000a000000ff01")), true);
 				});
-				it("deserialize_long_null_little_test", function() { // 0Nj
-					assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f90000000000000080")), null);
+				describe("guid", function() {
+					it("guid", function() { // 0a369037-75d3-b24d-6721-5a1d44d4bed5
+						assert.equal(c.deserialize(hexstr_to_bin("0100000019000000fe0a36903775d3b24d67215a1d44d4bed5")), "0a369037-75d3-b24d-6721-5a1d44d4bed5");
+					});
+					it("null", function() { // 0Ng
+						assert.equal(c.deserialize(hexstr_to_bin("0100000019000000fe00000000000000000000000000000000")), null);
+					});
+				});
+				it("byte", function() { // 0x01
+					assert.equal(c.deserialize(hexstr_to_bin("010000000a000000fc01")), "1");
+				});
+				describe("short", function() {
+					it("1", function() { // 1h
+						assert.equal(c.deserialize(hexstr_to_bin("010000000b000000fb0100")), 1);
+					});
+					it("null", function() { // 0Nh
+						assert.equal(c.deserialize(hexstr_to_bin("010000000b000000fb0080")), null);
+					});
+					it("Infinity", function() { // 0wh
+						assert.equal(c.deserialize(hexstr_to_bin("010000000b000000fbff7f")), Infinity);
+					});
+					it("-Infinity", function() { // -0wh
+						assert.equal(c.deserialize(hexstr_to_bin("010000000b000000fb0180")), -Infinity);
+					});
+				});
+				describe("integer", function() {
+					it("1", function() { // 1i
+						assert.equal(c.deserialize(hexstr_to_bin("010000000d000000fa01000000")), 1);
+					});
+					it("null", function() { // 0Ni
+						assert.equal(c.deserialize(hexstr_to_bin("010000000d000000fa00000080")), null);
+					});
+					it("Infinity", function() { // 0wi
+						assert.equal(c.deserialize(hexstr_to_bin("010000000d000000faffffff7f")), Infinity);
+					});
+					it("-Infinity", function() { // -0wi
+						assert.equal(c.deserialize(hexstr_to_bin("010000000d000000fa01000080")), -Infinity);
+					});
+				});
+				describe("long", function() {
+					describe("long2bignum", function() {
+						describe("default", function() {
+							it("1", function() { // 1j
+								assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f90100000000000000")), 1);
+							});
+							it("null", function() { // 0Nj
+								assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f90000000000000080")), null);
+							});
+							it("Infinity", function() { // 0wj
+								assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f9ffffffffffffff7f")), Infinity);
+							});
+							it("-Infinity", function() { // -0wj
+								assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f90100000000000080")), -Infinity);
+							});
+						});
+						describe("true", function() {
+							it("1", function() { // 1j
+								assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f90100000000000000"), undefined, undefined, undefined, true).toNumber(), 1);
+							});
+							it("null", function() { // 0Nj
+								assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f90000000000000080"), undefined, undefined, undefined, true), null);
+							});
+							it("Infinity", function() { // 0wj
+								assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f9ffffffffffffff7f"), undefined, undefined, undefined, true), Infinity);
+							});
+							it("-Infinity", function() { // -0wj
+								assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f90100000000000080"), undefined, undefined, undefined, true), -Infinity);
+							});
+						});
+						describe("false", function() {
+							it("1", function() { // 1j
+								assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f90100000000000000"), undefined, undefined, undefined, false), 1);
+							});
+							it("null", function() { // 0Nj
+								assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f90000000000000080"), undefined, undefined, undefined, false), null);
+							});
+							it("Infinity", function() { // 0wj
+								assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f9ffffffffffffff7f"), undefined, undefined, undefined, false), Infinity);
+							});
+							it("-Infinity", function() { // -0wj
+								assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f90100000000000080"), undefined, undefined, undefined, false), -Infinity);
+							});
+						});
+					});
+				});
+				describe("real", function() {
+					it("1", function() { // 1.0e
+						assert.equal(c.deserialize(hexstr_to_bin("010000000d000000f80000803f")), 1.0);
+					});
+					it("null", function() { // 0Ne
+						assert.equal(c.deserialize(hexstr_to_bin("010000000d000000f80000c0ff")), null);
+					});
+					it("Infinity", function() { // 0we
+						assert.equal(c.deserialize(hexstr_to_bin("010000000d000000f80000807f")), Infinity);
+					});
+					it("-Infinity", function() { // -0we
+						assert.equal(c.deserialize(hexstr_to_bin("010000000d000000f8000080ff")), -Infinity);
+					});
+				});
+				describe("float", function() {
+					it("1", function() { // 1.0f
+						assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f7000000000000f03f")), 1.0);
+					});
+					it("null", function() { // 0Nf
+						assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f7000000000000f8ff")), null);
+					});
+					it("Infinity", function() { // 0wf
+						assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f7000000000000f07f")), Infinity);
+					});
+					it("-Infinity", function() { // -0wf
+						assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f7000000000000f0ff")), -Infinity);
+					});
+				});
+				describe("char", function() {
+					describe("emptyChar2null", function() {
+						describe("default", function() {
+							it("a", function() { // "a"
+								assert.equal(c.deserialize(hexstr_to_bin("010000000a000000f661")), "a");
+							});
+							it("null", function() { // " "
+								assert.equal(c.deserialize(hexstr_to_bin("010000000a000000f620")), null);
+							});
+						});
+						describe("true", function() {
+							it("a", function() { // "a"
+								assert.equal(c.deserialize(hexstr_to_bin("010000000a000000f661"), undefined, undefined, true), "a");
+							});
+							it("null", function() { // " "
+								assert.equal(c.deserialize(hexstr_to_bin("010000000a000000f620"), undefined, undefined, true), null);
+							});
+						});
+						describe("false", function() {
+							it("a", function() { // "a"
+								assert.equal(c.deserialize(hexstr_to_bin("010000000a000000f661"), undefined, undefined, false), "a");
+							});
+							it("null", function() { // " "
+								assert.equal(c.deserialize(hexstr_to_bin("010000000a000000f620"), undefined, undefined, false), " ");
+							});
+						});
+					});
+				});
+				describe("symbol", function() {
+					it("length 1", function() { // `a
+						assert.equal(c.deserialize(hexstr_to_bin("010000000b000000f56100")), "a");
+					});
+					it("null", function() { // `
+						assert.equal(c.deserialize(hexstr_to_bin("010000000a000000f500")), null);
+					});
+					it("length 2", function() { // `ab
+						assert.equal(c.deserialize(hexstr_to_bin("010000000c000000f5616200")), "ab");
+					});
+					it("length 3", function() { // `abc
+						assert.equal(c.deserialize(hexstr_to_bin("010000000d000000f561626300")), "abc");
+					});
+					it("length 4", function() { // `abcd
+						assert.equal(c.deserialize(hexstr_to_bin("010000000e000000f56162636400")), "abcd");
+					});
+					it("lenth 5", function() { // `abcde
+						assert.equal(c.deserialize(hexstr_to_bin("010000000f000000f5616263646500")), "abcde");
+					});
+					it("unicode", function() { // `$"你"
+						assert.equal(c.deserialize(hexstr_to_bin("010000000d000000f5e4bda000")), "你");
+					});
+				});
+				describe("nanos2date", function() {
+					describe("default", function() {
+						it("deserialize_timestamp_little_test", function() { // 2014.06.23D11:34:39.412547000
+							assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f4b84d1d352d045706")).getTime(), moment.utc("2014.06.23 11:34:39.412547000", "YYYY.MM.DD HH:mm:ss.SSS").toDate().getTime());
+						});
+						it("deserialize_timestamp_null_little_test", function() { // 0Np
+							assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f40000000000000080")), null);
+						});
+						it("deserialize_timespan_little_test", function() { // 00:01:00.000000000
+							assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f0005847f80d000000")).getTime(), moment.utc("2000.01.01 00:01:00.000", "YYYY.MM.DD HH:mm:ss.SSS").toDate().getTime());
+						});
+						it("deserialize_timespan_null_little_test", function() { // 0Nn
+							assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f00000000000000080")), null);
+						});
+					});
+					describe("true", function() {
+						it("deserialize_timestamp_little_test", function() { // 2014.06.23D11:34:39.412547000
+							assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f4b84d1d352d045706"), true).getTime(), moment.utc("2014.06.23 11:34:39.412547000", "YYYY.MM.DD HH:mm:ss.SSS").toDate().getTime());
+						});
+						it("deserialize_timestamp_null_little_test", function() { // 0Np
+							assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f40000000000000080"), true), null);
+						});
+						it("deserialize_timespan_little_test", function() { // 00:01:00.000000000
+							assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f0005847f80d000000"), true).getTime(), moment.utc("2000.01.01 00:01:00.000", "YYYY.MM.DD HH:mm:ss.SSS").toDate().getTime());
+						});
+						it("deserialize_timespan_null_little_test", function() { // 0Nn
+							assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f00000000000000080"), true), null);
+						});
+					});
+					describe("false", function() {
+						it("deserialize_timestamp_little_test", function() { // 2014.06.23D11:34:39.412547000
+							assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f4b84d1d352d045706"), false), 1403523279412547000);
+						});
+						it("deserialize_timestamp_null_little_test", function() { // 0Np
+							assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f40000000000000080"), false), null);
+						});
+						it("deserialize_timespan_little_test", function() { // 00:01:00.000000000
+							assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f0005847f80d000000"), false), 60000000000);
+						});
+						it("deserialize_timespan_null_little_test", function() { // 0Nn
+							assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f00000000000000080"), false), null);
+						});
+					});
+				});
+				describe("month", function() {
+					it("201401", function() { // 2014.01m
+						assert.equal(c.deserialize(hexstr_to_bin("010000000d000000f3a8000000")).getTime(), moment.utc("2014.01", "YYYY.MM").toDate().getTime());
+					});
+					it("null", function() { // 0Nm
+						assert.equal(c.deserialize(hexstr_to_bin("010000000d000000f300000080")), null);
+					});
+					it("199501", function() { // 1995.01m
+						assert.equal(c.deserialize(hexstr_to_bin("010000000d000000f3c4ffffff")).getTime(), moment.utc("1995.01", "YYYY.MM").toDate().getTime());
+					});
+				});
+				describe("date", function() {
+					it("20140101", function() { // 2014.01.01
+						assert.equal(c.deserialize(hexstr_to_bin("010000000d000000f2fa130000")).getTime(), moment.utc("2014.01.91", "YYYY.MM").toDate().getTime());
+					});
+					it("null", function() { // 0Nd
+						assert.equal(c.deserialize(hexstr_to_bin("010000000d000000f200000080")), null);
+					});
+					it("19950101", function() { // 1995.01.01
+						assert.equal(c.deserialize(hexstr_to_bin("010000000d000000f2def8ffff")).getTime(), moment.utc("1995.01.01", "YYYY.MM").toDate().getTime());
+					});
+				});
+				describe("datetime", function() {
+					it("datetime", function() { // 2014.06.23T11:49:31.533
+						assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f1facf4b237ea7b440")).getTime(), moment.utc("2014.06.23 11:49:31.533", "YYYY.MM.DD HH:mm:ss.SSS").toDate().getTime());
+					});
+					it("null", function() { // 0Nz
+						assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f1000000000000f8ff")), null);
+					});
+				});
+				describe("minute", function() {
+					it("00:01", function() { // 00:01
+						assert.equal(c.deserialize(hexstr_to_bin("010000000d000000ef01000000")).getTime(), moment.utc("2000.01.01 00:01:00.000", "YYYY.MM.DD HH:mm:ss.SSS").toDate().getTime());
+					});
+					it("null", function() { // 0Nu
+						assert.equal(c.deserialize(hexstr_to_bin("010000000d000000ef00000080")), null);
+					});
+				});
+				describe("second", function() {
+					it("00:00:01", function() { // 00:00:01
+						assert.equal(c.deserialize(hexstr_to_bin("010000000d000000ee01000000")).getTime(), moment.utc("2000.01.01 00:00:01.000", "YYYY.MM.DD HH:mm:ss.SSS").toDate().getTime());
+					});
+					it("null", function() { // 0Nv
+						assert.equal(c.deserialize(hexstr_to_bin("010000000d000000ee00000080")), null);
+					});
+				});
+				describe("time", function() {
+					it("00:00:00.001", function() { // 00:00:00.001
+						assert.equal(c.deserialize(hexstr_to_bin("010000000d000000ed01000000")).getTime(), moment.utc("2000.01.01 00:00:00.001", "YYYY.MM.DD HH:mm:ss.SSS").toDate().getTime());
+					});
+					it("null", function() { // 0Nt
+						assert.equal(c.deserialize(hexstr_to_bin("010000000d000000ed00000080")), null);
+					});
 				});
 			});
-			describe("true", function() {
-				it("deserialize_long_little_test", function() { // 1j
-					assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f90100000000000000"), undefined, undefined, undefined, true).toNumber(), 1);
-				});
-				it("deserialize_long_null_little_test", function() { // 0Nj
-					assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f90000000000000080"), undefined, undefined, undefined, true), null);
-				});
-			});
-			describe("false", function() {
-				it("deserialize_long_little_test", function() { // 1j
-					assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f90100000000000000"), undefined, undefined, undefined, false), 1);
-				});
-				it("deserialize_long_null_little_test", function() { // 0Nj
-					assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f90000000000000080"), undefined, undefined, undefined, false), null);
+			// FIXME test deserialize list
+			describe("list", function() {
+				describe("string", function() {
+					it("ab", function() { // "ab"
+						assert.equal(c.deserialize(hexstr_to_bin("01000000100000000a00020000006162")), "ab");
+					});
+					it("unicode", function() { // "你好"
+						assert.equal(c.deserialize(hexstr_to_bin("01000000140000000a0006000000e4bda0e5a5bd")), "你好");
+					});
 				});
 			});
-		})
-		it("deserialize_real_little_test", function() { // 1.0e
-			assert.equal(c.deserialize(hexstr_to_bin("010000000d000000f80000803f")), 1.0);
+			// FIXME test deserialize dict
+			// FIXME test deserialize table with/without flipTables option
 		});
-		it("deserialize_real_null_little_test", function() { // 0Ne
-			assert.equal(c.deserialize(hexstr_to_bin("010000000d000000f80000c0ff")), null);
-		});
-		it("deserialize_float_little_test", function() { // 1.0f
-			assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f7000000000000f03f")), 1.0);
-		});
-		it("deserialize_float_null_little_test", function() { // 0Nf
-			assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f7000000000000f8ff")), null);
-		});
-		describe("emptyChar2null", function() {
-			describe("default", function() {
-				it("deserialize_char_little_test", function() { // "a"
-					assert.equal(c.deserialize(hexstr_to_bin("010000000a000000f661")), "a");
-				});
-				it("deserialize_char_null_little_test", function() { // " "
-					assert.equal(c.deserialize(hexstr_to_bin("010000000a000000f620")), null);
-				});
-			});
-			describe("true", function() {
-				it("deserialize_char_little_test", function() { // "a"
-					assert.equal(c.deserialize(hexstr_to_bin("010000000a000000f661"), undefined, undefined, true), "a");
-				});
-				it("deserialize_char_null_little_test", function() { // " "
-					assert.equal(c.deserialize(hexstr_to_bin("010000000a000000f620"), undefined, undefined, true), null);
-				});
-			});
-			describe("false", function() {
-				it("deserialize_char_little_test", function() { // "a"
-					assert.equal(c.deserialize(hexstr_to_bin("010000000a000000f661"), undefined, undefined, false), "a");
-				});
-				it("deserialize_char_null_little_test", function() { // " "
-					assert.equal(c.deserialize(hexstr_to_bin("010000000a000000f620"), undefined, undefined, false), " ");
-				});
-			});
-		});
-		it("deserialize_symbol_null_little_test", function() { // `
-			assert.equal(c.deserialize(hexstr_to_bin("010000000a000000f500")), null);
-		});
-		it("deserialize_symbol_length2_little_test", function() { // `ab
-			assert.equal(c.deserialize(hexstr_to_bin("010000000c000000f5616200")), "ab");
-		});
-		it("deserialize_symbol_length3_little_test", function() { // `abc
-			assert.equal(c.deserialize(hexstr_to_bin("010000000d000000f561626300")), "abc");
-		});
-		it("deserialize_symbol_length4_little_test", function() { // `abcd
-			assert.equal(c.deserialize(hexstr_to_bin("010000000e000000f56162636400")), "abcd");
-		});
-		it("deserialize_symbol_length5_little_test", function() { // `abcde
-			assert.equal(c.deserialize(hexstr_to_bin("010000000f000000f5616263646500")), "abcde");
-		});
-		it("deserialize_symbol_unicode_little_test", function() { // `$"你"
-			assert.equal(c.deserialize(hexstr_to_bin("010000000d000000f5e4bda000")), "你");
-		});
-		it("deserialize_string_unicode_little_test", function() { // "ab"
-			assert.equal(c.deserialize(hexstr_to_bin("01000000100000000a00020000006162")), "ab");
-		});
-		it("deserialize_string_unicode_little_test", function() { // "你好"
-			assert.equal(c.deserialize(hexstr_to_bin("01000000140000000a0006000000e4bda0e5a5bd")), "你好");
-		});
-		describe("nanos2date", function() {
-			describe("default", function() {
-				it("deserialize_timestamp_little_test", function() { // 2014.06.23D11:34:39.412547000
-					assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f4b84d1d352d045706")).getTime(), moment.utc("2014.06.23 11:34:39.412547000", "YYYY.MM.DD HH:mm:ss.SSS").toDate().getTime());
-				});
-				it("deserialize_timestamp_null_little_test", function() { // 0Np
-					assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f40000000000000080")), null);
-				});
-				it("deserialize_timespan_little_test", function() { // 00:01:00.000000000
-					assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f0005847f80d000000")).getTime(), moment.utc("2000.01.01 00:01:00.000", "YYYY.MM.DD HH:mm:ss.SSS").toDate().getTime());
-				});
-				it("deserialize_timespan_null_little_test", function() { // 0Nn
-					assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f00000000000000080")), null);
-				});
-			});
-			describe("true", function() {
-				it("deserialize_timestamp_little_test", function() { // 2014.06.23D11:34:39.412547000
-					assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f4b84d1d352d045706"), true).getTime(), moment.utc("2014.06.23 11:34:39.412547000", "YYYY.MM.DD HH:mm:ss.SSS").toDate().getTime());
-				});
-				it("deserialize_timestamp_null_little_test", function() { // 0Np
-					assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f40000000000000080"), true), null);
-				});
-				it("deserialize_timespan_little_test", function() { // 00:01:00.000000000
-					assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f0005847f80d000000"), true).getTime(), moment.utc("2000.01.01 00:01:00.000", "YYYY.MM.DD HH:mm:ss.SSS").toDate().getTime());
-				});
-				it("deserialize_timespan_null_little_test", function() { // 0Nn
-					assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f00000000000000080"), true), null);
-				});
-			});
-			describe("false", function() {
-				it("deserialize_timestamp_little_test", function() { // 2014.06.23D11:34:39.412547000
-					assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f4b84d1d352d045706"), false), 1403523279412547000);
-				});
-				it("deserialize_timestamp_null_little_test", function() { // 0Np
-					assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f40000000000000080"), false), null);
-				});
-				it("deserialize_timespan_little_test", function() { // 00:01:00.000000000
-					assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f0005847f80d000000"), false), 60000000000);
-				});
-				it("deserialize_timespan_null_little_test", function() { // 0Nn
-					assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f00000000000000080"), false), null);
-				});
-			});
-		});
-		it("deserialize_month_201401_little_test", function() { // 2014.01m
-			assert.equal(c.deserialize(hexstr_to_bin("010000000d000000f3a8000000")).getTime(), moment.utc("2014.01", "YYYY.MM").toDate().getTime());
-		});
-		it("deserialize_month_null_little_test", function() { // 0Nm
-			assert.equal(c.deserialize(hexstr_to_bin("010000000d000000f300000080")), null);
-		});
-		it("deserialize_month_199501_little_test", function() { // 1995.01m
-			assert.equal(c.deserialize(hexstr_to_bin("010000000d000000f3c4ffffff")).getTime(), moment.utc("1995.01", "YYYY.MM").toDate().getTime());
-		});
-		it("deserialize_date_20140101_little_test", function() { // 2014.01.01
-			assert.equal(c.deserialize(hexstr_to_bin("010000000d000000f2fa130000")).getTime(), moment.utc("2014.01.91", "YYYY.MM").toDate().getTime());
-		});
-		it("deserialize_date_null_little_test", function() { // 0Nd
-			assert.equal(c.deserialize(hexstr_to_bin("010000000d000000f200000080")), null);
-		});
-		it("deserialize_date_19950101_little_test", function() { // 1995.01.01
-			assert.equal(c.deserialize(hexstr_to_bin("010000000d000000f2def8ffff")).getTime(), moment.utc("1995.01.01", "YYYY.MM").toDate().getTime());
-		});
-		it("deserialize_datetime_little_test", function() { // 2014.06.23T11:49:31.533
-			assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f1facf4b237ea7b440")).getTime(), moment.utc("2014.06.23 11:49:31.533", "YYYY.MM.DD HH:mm:ss.SSS").toDate().getTime());
-		});
-		it("deserialize_datetime_null_little_test", function() { // 0Nz
-			assert.equal(c.deserialize(hexstr_to_bin("0100000011000000f1000000000000f8ff")), null);
-		});
-		it("deserialize_minute_little_test", function() { // 00:01
-			assert.equal(c.deserialize(hexstr_to_bin("010000000d000000ef01000000")).getTime(), moment.utc("2000.01.01 00:01:00.000", "YYYY.MM.DD HH:mm:ss.SSS").toDate().getTime());
-		});
-		it("deserialize_minute_null_little_test", function() { // 0Nu
-			assert.equal(c.deserialize(hexstr_to_bin("010000000d000000ef00000080")), null);
-		});
-		it("deserialize_second_little_test", function() { // 00:00:01
-			assert.equal(c.deserialize(hexstr_to_bin("010000000d000000ee01000000")).getTime(), moment.utc("2000.01.01 00:00:01.000", "YYYY.MM.DD HH:mm:ss.SSS").toDate().getTime());
-		});
-		it("deserialize_second_null_little_test", function() { // 0Nv
-			assert.equal(c.deserialize(hexstr_to_bin("010000000d000000ee00000080")), null);
-		});
-		it("deserialize_time_little_test", function() { // 00:00:00.001
-			assert.equal(c.deserialize(hexstr_to_bin("010000000d000000ed01000000")).getTime(), moment.utc("2000.01.01 00:00:00.001", "YYYY.MM.DD HH:mm:ss.SSS").toDate().getTime());
-		});
-		it("deserialize_time_null_little_test", function() { // 0Nt
-			assert.equal(c.deserialize(hexstr_to_bin("010000000d000000ed00000080")), null);
-		});
-		// FIXME test deserialize list
-		// FIXME test deserialize dict
-		// FIXME test deserialize table with/without flipTables option
 	});
 	describe("serialize", function() {
 		describe("infer type", function() {
@@ -358,7 +439,7 @@ describe("c", function() {
 							assert.equal(bin_to_hexstr(c.serialize(typed.float(-Infinity))), "0100000011000000f7000000000000f0ff");
 						});
 					});
-					describe("float", function() {
+					describe("char", function() {
 						it("a", function() { // "a"
 							assert.equal(bin_to_hexstr(c.serialize(typed.char("a"))), "010000000a000000f661");
 						});
