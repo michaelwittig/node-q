@@ -375,11 +375,30 @@ describe("c", function() {
 				it("Date", function() {
 					assert.equal(bin_to_hexstr(c.serialize(new Date("2014-06-23T11:49:31.533"))), "0100000011000000f1facf4b237ea7b440");
 				});
-				it("Object", function() {
-					assert.equal(bin_to_hexstr(c.serialize({a: 1, b: true, c: 3})), "010000002f000000630b0003000000610062006300000003000000f7000000000000f03fff01f70000000000000840");
+				describe("Object", function() {
+					it("one key", function() {
+						assert.equal(bin_to_hexstr(c.serialize({a: 1})), "010000001f000000630b00010000006100090001000000000000000000f03f");
+					});
+					it("multiple keys, same value type", function() {
+						assert.equal(bin_to_hexstr(c.serialize({a: 1, b: 2, c: 3})), "0100000033000000630b0003000000610062006300090003000000000000000000f03f00000000000000400000000000000840");
+					});
+					it("multiple keys, different value types", function() {
+						assert.equal(bin_to_hexstr(c.serialize({a: 1, b: true, c: 3})), "010000002f000000630b0003000000610062006300000003000000f7000000000000f03fff01f70000000000000840");
+					});
 				});
-				it("Array", function() {
-					assert.equal(bin_to_hexstr(c.serialize([1, true, 3])), "0100000022000000000003000000f7000000000000f03fff01f70000000000000840");
+				describe("Array", function() {
+					it("empty", function() {
+						assert.equal(bin_to_hexstr(c.serialize([])), "010000000e000000000000000000");
+					});
+					it("one element", function() {
+						assert.equal(bin_to_hexstr(c.serialize([1])), "0100000016000000090001000000000000000000f03f");
+					});
+					it("multiple elements, same types", function() {
+						assert.equal(bin_to_hexstr(c.serialize([1, 2, 3])), "0100000026000000090003000000000000000000f03f00000000000000400000000000000840");
+					});
+					it("multiple elements, different types", function() {
+						assert.equal(bin_to_hexstr(c.serialize([1, true, 3])), "0100000022000000000003000000f7000000000000f03fff01f70000000000000840");
+					});
 				});
 				it("Null", function() {
 					assert.equal(bin_to_hexstr(c.serialize(null)), "010000000a0000006500");
@@ -653,7 +672,17 @@ describe("c", function() {
 						});
 					});
 				});
-				// FIXME test serialize dict
+				describe("dict", function() {
+					it("one key", function() {
+						assert.equal(bin_to_hexstr(c.serialize(typed.dict({a: typed.byte(1)}))), "0100000018000000630b0001000000610004000100000001");
+					});
+					it("multiple keys, same value type", function() {
+						assert.equal(bin_to_hexstr(c.serialize(typed.dict({a: typed.long(bignum(1)), b: typed.long(bignum(2)), c: typed.long(bignum(3))}))), "0100000033000000630b0003000000610062006300070003000000010000000000000002000000000000000300000000000000");
+					});
+					it("multiple keys, different value types", function() {
+						assert.equal(bin_to_hexstr(c.serialize(typed.dict({a: typed.long(bignum(1)), b: typed.boolean(true), c: typed.float(3)}))), "010000002f000000630b0003000000610062006300000003000000f90100000000000000ff01f70000000000000840");
+					});
+				});
 				// TODO test serialize table
 			});
 		});
