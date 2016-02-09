@@ -10,7 +10,7 @@ circular:
 
 mocha:
 	@echo "mocha (unit test)"
-	@./node_modules/.bin/mocha test/*.js
+	@TZ=UTC ./node_modules/.bin/mocha test/*.js
 	@echo
 
 coverage:

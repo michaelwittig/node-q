@@ -288,13 +288,138 @@ describe("c", function() {
 				});
 			});
 			describe("list", function() {
-				// TODO test deserialize list for every type
+				it("empty", function() {
+					assert.deepEqual(c.deserialize(hexstr_to_bin("010000000e000000000000000000")), []);
+				});
+				it("generic", function() { // (1j;1b;3h)
+					assert.deepEqual(c.deserialize(hexstr_to_bin("010000001c000000000003000000f90100000000000000ff01fb0300")), [1, true, 3]);
+				});
+				// TODO test deserialize list of list
+				describe("boolean", function() {
+					it("single", function() {
+						assert.deepEqual(c.deserialize(hexstr_to_bin("010000000f00000001000100000001")), [true]);
+					});
+					it("multi", function() {
+						assert.deepEqual(c.deserialize(hexstr_to_bin("0100000011000000010003000000010001")), [true, false, true]);
+					});
+				});
+				describe("guid", function() {
+					// TODO test deserialize list of guid
+				});
+				describe("byte", function() {
+					it("single", function() {
+						assert.deepEqual(c.deserialize(hexstr_to_bin("010000000f00000004000100000001")), [1]);
+					});
+					it("multi", function() {
+						assert.deepEqual(c.deserialize(hexstr_to_bin("0100000011000000040003000000010203")), [1, 2, 3]);
+					});
+				});
+				describe("short", function() {
+					it("single", function() {
+						assert.deepEqual(c.deserialize(hexstr_to_bin("01000000100000000500010000000100")), [1]);
+					});
+					it("multi", function() {
+						assert.deepEqual(c.deserialize(hexstr_to_bin("0100000014000000050003000000010002000300")), [1, 2, 3]);
+					});
+				});
+				describe("int", function() {
+					it("single", function() {
+						assert.deepEqual(c.deserialize(hexstr_to_bin("010000001200000006000100000001000000")), [1]);
+					});
+					it("multi", function() {
+						assert.deepEqual(c.deserialize(hexstr_to_bin("010000001a000000060003000000010000000200000003000000")), [1, 2, 3]);
+					});
+				});
+				describe("long", function() {
+					it("single", function() {
+						assert.deepEqual(c.deserialize(hexstr_to_bin("01000000160000000700010000000100000000000000")), [1]);
+					});
+					it("multi", function() {
+						assert.deepEqual(c.deserialize(hexstr_to_bin("0100000026000000070003000000010000000000000002000000000000000300000000000000")), [1, 2, 3]);
+					});
+				});
+				describe("real", function() {
+					it("single", function() {
+						assert.deepEqual(c.deserialize(hexstr_to_bin("01000000120000000800010000000000803f")), [1]);
+					});
+					it("multi", function() {
+						assert.deepEqual(c.deserialize(hexstr_to_bin("010000001a0000000800030000000000803f0000004000004040")), [1, 2, 3]);
+					});
+				});
+				describe("float", function() {
+					it("single", function() {
+						assert.deepEqual(c.deserialize(hexstr_to_bin("0100000016000000090001000000000000000000f03f")), [1]);
+					});
+					it("multi", function() {
+						assert.deepEqual(c.deserialize(hexstr_to_bin("0100000026000000090003000000000000000000f03f00000000000000400000000000000840")), [1, 2, 3]);
+					});
+				});
 				describe("char", function() {
-					it("ab", function() { // "ab"
+					it("single", function() {
+						assert.deepEqual(c.deserialize(hexstr_to_bin("010000000f0000000a000100000061")), "a");
+					});
+					it("multi", function() {
 						assert.deepEqual(c.deserialize(hexstr_to_bin("01000000100000000a00020000006162")), "ab");
 					});
 					it("unicode", function() { // "你好"
 						assert.deepEqual(c.deserialize(hexstr_to_bin("01000000140000000a0006000000e4bda0e5a5bd")), "你好");
+					});
+				});
+				describe("symbol", function() {
+					it("single", function() {
+						assert.deepEqual(c.deserialize(hexstr_to_bin("01000000100000000b00010000006100")), ["a"]);
+					});
+					it("multi", function() {
+						assert.deepEqual(c.deserialize(hexstr_to_bin("01000000170000000b0003000000610061620061626300")), ["a", "ab", "abc"]);
+					});
+				});
+				describe("timestamp", function() {
+					// TODO test deserialize list of timestamp
+				});
+				describe("month", function() {
+					it("single", function() { // 1997.01m
+						assert.deepEqual(c.deserialize(hexstr_to_bin("01000000120000000d0001000000dcffffff")), [new Date("1997-01-01T00:00:00.000")]);
+					});
+					it("multi", function() {
+						assert.deepEqual(c.deserialize(hexstr_to_bin("010000001a0000000d0003000000dcffffffe8fffffff4ffffff")), [new Date("1997-01-01T00:00:00.000"), new Date("1998-01-01T00:00:00.000"), new Date("1999-01-01T00:00:00.000")]);
+					});
+				});
+				describe("date", function() {
+					it("single", function() { // 1997.01.01
+						assert.deepEqual(c.deserialize(hexstr_to_bin("01000000120000000e0001000000b9fbffff")), [new Date("1997-01-01T00:00:00.000")]);
+					});
+					it("multi", function() {
+						assert.deepEqual(c.deserialize(hexstr_to_bin("010000001a0000000e0003000000b9fbffff26fdffff93feffff")), [new Date("1997-01-01T00:00:00.000"), new Date("1998-01-01T00:00:00.000"), new Date("1999-01-01T00:00:00.000")]);
+					});
+				});
+				describe("datetime", function() {
+					// TODO test deserialize list of datetime
+				});
+				describe("timespan", function() {
+					// TODO test deserialize list of timespan
+				});
+				describe("minute", function() {
+					it("single", function() { // 00:01
+						assert.deepEqual(c.deserialize(hexstr_to_bin("010000001200000011000100000001000000")), [new Date("2000-01-01T00:01:00.000")]);
+					});
+					it("multi", function() {
+						assert.deepEqual(c.deserialize(hexstr_to_bin("010000001a000000110003000000010000000200000003000000")), [new Date("2000-01-01T00:01:00.000"), new Date("2000-01-01T00:02:00.000"), new Date("2000-01-01T00:03:00.000")]);
+					});
+				});
+				describe("second", function() {
+					it("single", function() { // 00:00:01
+						assert.deepEqual(c.deserialize(hexstr_to_bin("010000001200000012000100000001000000")), [new Date("2000-01-01T00:00:01.000")]);
+					});
+					it("multi", function() {
+						assert.deepEqual(c.deserialize(hexstr_to_bin("010000001a000000120003000000010000000200000003000000")), [new Date("2000-01-01T00:00:01.000"), new Date("2000-01-01T00:00:02.000"), new Date("2000-01-01T00:00:03.000")]);
+					});
+				});
+				describe("time", function() {
+					it("single", function() { // 00:00:00.001
+						assert.deepEqual(c.deserialize(hexstr_to_bin("010000001200000013000100000001000000")), [new Date("2000-01-01T00:00:00.001")]);
+					});
+					it("multi", function() {
+						assert.deepEqual(c.deserialize(hexstr_to_bin("010000001a000000130003000000010000000200000003000000")), [new Date("2000-01-01T00:00:00.001"), new Date("2000-01-01T00:00:00.002"), new Date("2000-01-01T00:00:00.003")]);
 					});
 				});
 			});
