@@ -3,6 +3,7 @@ var net = require("net");
 var events = require("events");
 var util = require("util");
 var assert = require("./lib/assert.js");
+var typed = require("./lib/typed.js");
 
 function Connection(socket, nanos2date, flipTables, emptyChar2null, long2bignum) {
 	"use strict";
@@ -231,3 +232,11 @@ function connect(params, cb) {
 	socket.once("error", errorcb);
 }
 exports.connect = connect;
+
+// export typed API
+Object.keys(typed).forEach(function(k) {
+	"use strict";
+	if (/^[a-z]*$/.test(k[0])) {
+		exports[k] = typed[k];
+	}
+});
