@@ -294,7 +294,14 @@ describe("c", function() {
 				it("generic", function() { // (1j;1b;3h)
 					assert.deepEqual(c.deserialize(hexstr_to_bin("010000001c000000000003000000f90100000000000000ff01fb0300")), [1, true, 3]);
 				});
-				// TODO test deserialize list of list
+				describe("list of list", function() {
+					it("same types", function() { // enlist (1f;2f;3f)
+						assert.deepEqual(c.deserialize(hexstr_to_bin("010000002c000000000001000000090003000000000000000000f03f00000000000000400000000000000840")), [[1, 2, 3]]);
+					});
+					it("different types", function() { // enlist (1f;1b;3h)
+						assert.deepEqual(c.deserialize(hexstr_to_bin("0100000022000000000001000000000003000000f7000000000000f03fff01fb0300")), [[1, true, 3]]);
+					});
+				});
 				describe("boolean", function() {
 					it("single", function() {
 						assert.deepEqual(c.deserialize(hexstr_to_bin("010000000f00000001000100000001")), [true]);
@@ -304,7 +311,12 @@ describe("c", function() {
 					});
 				});
 				describe("guid", function() {
-					// TODO test deserialize list of guid
+					it("single", function() {
+						assert.deepEqual(c.deserialize(hexstr_to_bin("010000001e000000020001000000daedb4cc85f44ba0e3083c62191c0865")), ["daedb4cc-85f4-4ba0-e308-3c62191c0865"]);
+					});
+					it("multi", function() {
+						assert.deepEqual(c.deserialize(hexstr_to_bin("010000003e000000020003000000ca3b0039fc23f2892c3769d4a24fe17cc73d1b400fce85c1a78fb653c8c6d022f4f58976d8cad4c10db7d102c6f91025")), ["ca3b0039-fc23-f289-2c37-69d4a24fe17c", "c73d1b40-0fce-85c1-a78f-b653c8c6d022", "f4f58976-d8ca-d4c1-0db7-d102c6f91025"]);
+					});
 				});
 				describe("byte", function() {
 					it("single", function() {
@@ -374,7 +386,32 @@ describe("c", function() {
 					});
 				});
 				describe("timestamp", function() {
-					// TODO test deserialize list of timestamp
+					describe("nanos2date", function() {
+						describe("default", function() {
+							it("single", function() { // 2014.06.23D11:34:39.412547000
+								assert.deepEqual(c.deserialize(hexstr_to_bin("01000000160000000c0001000000b84d1d352d045706")), [new Date("2014-06-23T11:34:39.412")]);
+							});
+							it("multi", function() { // 2014.06.23D11:34:39.412547000
+								assert.deepEqual(c.deserialize(hexstr_to_bin("01000000260000000c0003000000b84d1d352d045706b84d5f3c96396006b84df0d493bd6906")), [new Date("2014-06-23T11:34:39.412"), new Date("2014-07-23T11:34:39.412"), new Date("2014-08-23T11:34:39.412")]);
+							});
+						});
+						describe("true", function() {
+							it("single", function() { // 2014.06.23D11:34:39.412547000
+								assert.deepEqual(c.deserialize(hexstr_to_bin("01000000160000000c0001000000b84d1d352d045706"), true), [new Date("2014-06-23T11:34:39.412")]);
+							});
+							it("multi", function() { // 2014.06.23D11:34:39.412547000
+								assert.deepEqual(c.deserialize(hexstr_to_bin("01000000260000000c0003000000b84d1d352d045706b84d5f3c96396006b84df0d493bd6906"), true), [new Date("2014-06-23T11:34:39.412"), new Date("2014-07-23T11:34:39.412"), new Date("2014-08-23T11:34:39.412")]);
+							});
+						});
+						describe("false", function() {
+							it("single", function() { // 2014.06.23D11:34:39.412547000
+								assert.deepEqual(c.deserialize(hexstr_to_bin("01000000160000000c0001000000b84d1d352d045706"), false), [1403523279412547000]);
+							});
+							it("multi", function() { // 2014.06.23D11:34:39.412547000
+								assert.deepEqual(c.deserialize(hexstr_to_bin("01000000260000000c0003000000b84d1d352d045706b84d5f3c96396006b84df0d493bd6906"), false), [1403523279412547000, 1406115279412547000, 1408793679412547000]);
+							});
+						});
+					});
 				});
 				describe("month", function() {
 					it("single", function() { // 1997.01m
@@ -393,10 +430,40 @@ describe("c", function() {
 					});
 				});
 				describe("datetime", function() {
-					// TODO test deserialize list of datetime
+					it("single", function() { // 2001.01.01T00:00:00.000
+						assert.deepEqual(c.deserialize(hexstr_to_bin("01000000160000000f00010000000000000000e07640")), [new Date("2001-01-01T00:00:00.000")]);
+					});
+					it("multi", function() {
+						assert.deepEqual(c.deserialize(hexstr_to_bin("01000000260000000f00030000000000000000e076400000000000d078400000000000907a40")), [new Date("2001-01-01T00:00:00.000"), new Date("2001-02-01T00:00:00.000"), new Date("2001-03-01T00:00:00.000")]);
+					});
 				});
 				describe("timespan", function() {
-					// TODO test deserialize list of timespan
+					describe("nanos2date", function() {
+						describe("default", function() {
+							it("single", function() { // 00:01:00.000000000
+								assert.deepEqual(c.deserialize(hexstr_to_bin("0100000016000000100001000000005847f80d000000")), [new Date("2000-01-01T00:01:00.000")]);
+							});
+							it("multi", function() { // 00:01:00.000000000
+								assert.deepEqual(c.deserialize(hexstr_to_bin("0100000026000000100003000000005847f80d00000000b08ef01b0000000008d6e829000000")), [new Date("2000-01-01T00:01:00.000"), new Date("2000-01-01T00:02:00.000"), new Date("2000-01-01T00:03:00.000")]);
+							});
+						});
+						describe("true", function() {
+							it("single", function() { // 00:01:00.000000000
+								assert.deepEqual(c.deserialize(hexstr_to_bin("0100000016000000100001000000005847f80d000000"), true), [new Date("2000-01-01T00:01:00.000")]);
+							});
+							it("multi", function() { // 00:01:00.000000000
+								assert.deepEqual(c.deserialize(hexstr_to_bin("0100000026000000100003000000005847f80d00000000b08ef01b0000000008d6e829000000"), true), [new Date("2000-01-01T00:01:00.000"), new Date("2000-01-01T00:02:00.000"), new Date("2000-01-01T00:03:00.000")]);
+							});
+						});
+						describe("false", function() {
+							it("single", function() { // 00:01:00.000000000
+								assert.deepEqual(c.deserialize(hexstr_to_bin("0100000016000000100001000000005847f80d000000"), false), [60000000000]);
+							});
+							it("multi", function() { // 00:01:00.000000000
+								assert.deepEqual(c.deserialize(hexstr_to_bin("0100000026000000100003000000005847f80d00000000b08ef01b0000000008d6e829000000"), false), [60000000000, 120000000000, 180000000000]);
+							});
+						});
+					});
 				});
 				describe("minute", function() {
 					it("single", function() { // 00:01
