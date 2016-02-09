@@ -399,6 +399,12 @@ describe("c", function() {
 					it("multiple elements, different types", function() {
 						assert.equal(bin_to_hexstr(c.serialize([1, true, 3])), "0100000022000000000003000000f7000000000000f03fff01f70000000000000840");
 					});
+					it("Array of Array same type", function() {
+						assert.equal(bin_to_hexstr(c.serialize([[1, 2, 3]])), "010000002c000000000001000000090003000000000000000000f03f00000000000000400000000000000840");
+					});
+					it("Array of Array different types", function() {
+						assert.equal(bin_to_hexstr(c.serialize([[1, true, 3]])), "0100000028000000000001000000000003000000f7000000000000f03fff01f70000000000000840");
+					});
 				});
 				it("Null", function() {
 					assert.equal(bin_to_hexstr(c.serialize(null)), "010000000a0000006500");
