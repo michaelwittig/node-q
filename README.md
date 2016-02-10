@@ -207,7 +207,44 @@ You can disable `flipTables` during `connect(params, cb)` to get a table as an [
 
 If you want to explicitly serialize a JavaScript type as a q type you need to use the typed API.
 
-FIXME add docs for typed API
+Let's start with two examples:
+
+```javascript
+con.k("type", nodeq.short(1), function(err, res) {
+	if (err) throw err;
+	console.log("result", res); // -5
+});
+
+con.k("type", nodeq.shorts([1, 2, 3]), function(err, res) {
+	if (err) throw err;
+	console.log("result", res); // 5
+});
+```
+
+For every primitive type in q this module exports a method to wrap the JavaScript value. You can also wrap a JavaScript array into a q type by adding the plural s to the method.
+
+| q type | primitive wrapper | array wrapper |
+| ------ | ----------------- | ------------- |
+| boolean | `boolean(Boolean)` | `booleans(Array[Boolean])` |
+| guid | `guid(String)`| guids(Array[String])` |
+| byte | `byte(Number)`| `bytes(Array[Number])` |
+| short | `short(Number)` |  `shorts(Array[Number])` |
+| int | `int(Number)` |  `ints(Array[Number])` |
+| long | `long(bignum)` <sup>[1](#wrappers-footnote1)</sup> |  `longs(Array[bignum])` <sup>[1](#wrappers-footnote1)</sup> |
+| real | `real(Number)` |  `reals(Array[Number])` |
+| float | `float(Number)` |  `floats(Array[Number])` |
+| char | `char(String)`| chars(Array[String])` |
+| symbol | `symbol(String)`| symbols(Array[String])` |
+| timestamp | `timestamp(Date)`| timestamps(Array[Date])` |
+| month | `month(Date)`| months(Array[Date])` |
+| date | `date(Date)`| dates(Array[Date])` |
+| datetime | `datetime(Date)`| datetimes(Array[Date])` |
+| timespan | `timespan(Date)`| timespans(Array[Date])` |
+| minute | `minute(Date)`| minutes(Array[Date])` |
+| second | `second(Date)`| seconds(Array[Date])` |
+| time | `time(Date)`| times(Array[Date])` |
+
+* <a name="wrappers-footnote1">1</a>: JavaScript can not represent 64bit longs. Therefore this module uses the [bignum](https://www.npmjs.com/package/bignum) module to represent longs.
 
 ## API
 
