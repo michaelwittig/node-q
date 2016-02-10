@@ -112,7 +112,7 @@ q has more [data types](http://code.kx.com/wiki/Reference/Datatypes) than JavaSc
 | byte | [Number](https://developer.mozilla.org/docs/Glossary/Number) | | | |
 | short | [Number](https://developer.mozilla.org/docs/Glossary/Number) | [Null](https://developer.mozilla.org/docs/Glossary/Null) | [Infinity](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Infinity) | -[Infinity](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Infinity) |
 | int | [Number](https://developer.mozilla.org/docs/Glossary/Number) | [Null](https://developer.mozilla.org/docs/Glossary/Null) | [Infinity](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Infinity) | -[Infinity](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Infinity) |
-| long | [Number](https://developer.mozilla.org/docs/Glossary/Number) | [Null](https://developer.mozilla.org/docs/Glossary/Null) | [Infinity](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Infinity) | -[Infinity](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Infinity) |
+| long | [Number](https://developer.mozilla.org/docs/Glossary/Number) <sup>[5](#types-footnote5)</sup> | [Null](https://developer.mozilla.org/docs/Glossary/Null) | [Infinity](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Infinity) | -[Infinity](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Infinity) |
 | real | [Number](https://developer.mozilla.org/docs/Glossary/Number) | [Null](https://developer.mozilla.org/docs/Glossary/Null) | [Infinity](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Infinity) | -[Infinity](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Infinity) |
 | float | [Number](https://developer.mozilla.org/docs/Glossary/Number) | [Null](https://developer.mozilla.org/docs/Glossary/Null) | [Infinity](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Infinity) | -[Infinity](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Infinity) |
 | char | [String](https://developer.mozilla.org/docs/Glossary/String) | [Null](https://developer.mozilla.org/docs/Glossary/Null) <sup>[4](#types-footnote4)</sup> | | |
@@ -130,6 +130,7 @@ q has more [data types](http://code.kx.com/wiki/Reference/Datatypes) than JavaSc
 * <a name="types-footnote2">2</a>: think about running your Node.js process with `TZ=UTC node ...` to run in UTC timezone. q doesn't know timezones.
 * <a name="types-footnote3">3</a>: date is set to `2000-01-01` in the Date object. Only evaluate the time part.
 * <a name="types-footnote4">4</a>: You can disable `emptyChar2null` deserialization during `connect(params, cb)` to keep the empty char.
+* <a name="types-footnote5">5</a>: You can enable `long2bignum` deserialization during `connect(params, cb)` to represent longs as [bignum](https://www.npmjs.com/package/bignum).
 
 #### dict
 
@@ -187,6 +188,8 @@ You can disable `flipTables` during `connect(params, cb)` to get a table as an [
 
 ### From JavaScript to q (serialization)
 
+#### Simple (infer type)
+
 | JavaScript type | q type |
 | --------------- | ------ |
 | [Boolean](https://developer.mozilla.org/docs/Glossary/Boolean) | boolean |
@@ -199,6 +202,49 @@ You can disable `flipTables` during `connect(params, cb)` to get a table as an [
 | [Null](https://developer.mozilla.org/docs/Glossary/Null) | unary primitive |
 | [Infinity](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Infinity) | float |
 | -[Infinity](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Infinity) | float |
+
+#### Advanced (explicit types)
+
+If you want to explicitly serialize a JavaScript type as a q type you need to use the typed API.
+
+Let's start with two examples:
+
+```javascript
+con.k("type", nodeq.short(1), function(err, res) {
+	if (err) throw err;
+	console.log("result", res); // -5
+});
+
+con.k("type", nodeq.shorts([1, 2, 3]), function(err, res) {
+	if (err) throw err;
+	console.log("result", res); // 5
+});
+```
+
+For every primitive type in q, this module exports a method to wrap the JavaScript value. You can also wrap a JavaScript array into a q type by appending an s to the primitive wrapper's name.
+
+| q type | primitive wrapper | array wrapper |
+| ------ | ----------------- | ------------- |
+| boolean | `boolean(Boolean)` | `booleans(Array[Boolean])` |
+| guid | `guid(String)`| `guids(Array[String])` |
+| byte | `byte(Number)`| `bytes(Array[Number])` |
+| short | `short(Number)` | `shorts(Array[Number])` |
+| int | `int(Number)` | `ints(Array[Number])` |
+| long | `long(bignum)` <sup>[1](#wrappers-footnote1)</sup> | `longs(Array[bignum])` <sup>[1](#wrappers-footnote1)</sup> |
+| real | `real(Number)` | `reals(Array[Number])` |
+| float | `float(Number)` | `floats(Array[Number])` |
+| char | `char(String)` | `chars(Array[String])` |
+| symbol | `symbol(String)` | `symbols(Array[String])` |
+| timestamp | `timestamp(Date)` | `timestamps(Array[Date])` |
+| month | `month(Date)` | `months(Array[Date])` |
+| date | `date(Date)` | `dates(Array[Date])` |
+| datetime | `datetime(Date)` | `datetimes(Array[Date])` |
+| timespan | `timespan(Date)` | `timespans(Array[Date])` |
+| minute | `minute(Date)` | `minutes(Array[Date])` |
+| second | `second(Date)` | `seconds(Array[Date])` |
+| time | `time(Date)` | `times(Array[Date])` |
+
+* <a name="wrappers-footnote1">1</a>: JavaScript can not represent 64bit longs. Therefore this module uses the [bignum](https://www.npmjs.com/package/bignum) module to represent longs.
 
 ## API
 
@@ -214,6 +260,7 @@ You can disable `flipTables` during `connect(params, cb)` to get a table as an [
 	* `nanos2date`: Boolean (optional, default: true)
 	* `flipTables`: Boolean (optional, default: true)
 	* `emptyChar2null`: Boolean (optional, default: true)
+	* `long2bignum`: Boolean (optional, default: false)
 * `cb`: Function(`err`, `con`)
 	* `err`: `Error` or `undefined`
 	* `conn`: `Connection` or `undefined`

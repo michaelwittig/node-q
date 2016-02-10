@@ -1,6 +1,6 @@
 {
 	"name": "node-q",
-	"version": "1.3.0",
+	"version": "2.0.0-rc.1",
 	"description": "Q interfacing with Node.js",
 	"keywords": ["q", "kx", "kdb+", "kdb+tick", "interfacing"],
 	"main": "index.js",
@@ -11,15 +11,17 @@
 	"author": "Michael Wittig <post@michaelwittig.info>",
 	"license": "MIT",
 	"dependencies": {
+		"bignum": "0.11.0",
+		"node-uuid": "1.4.7"
 	},
 	"devDependencies": {
-		"async": "1.5.0",
-		"mocha": "2.3.4",
-		"jshint": "2.8.0",
+		"async": "1.5.2",
+		"mocha": "2.4.5",
+		"jshint": "2.9.1",
 		"madge": "0.5.3",
 		"npmedge": "0.2.2",
-		"moment": "2.10.6",
-		"istanbul": "0.4.1"
+		"moment": "2.11.2",
+		"istanbul": "0.4.2"
 	},
 	"repository": {
 		"type": "git",
