@@ -5,14 +5,14 @@ var util = require("util");
 var assert = require("./lib/assert.js");
 var typed = require("./lib/typed.js");
 
-function Connection(socket, nanos2date, flipTables, emptyChar2null, long2bignum) {
+function Connection(socket, nanos2date, flipTables, emptyChar2null, long2number) {
 	"use strict";
 	events.EventEmitter.call(this);
 	this.socket = socket;
 	this.nanos2date = nanos2date;
 	this.flipTables = flipTables;
 	this.emptyChar2null = emptyChar2null;
-	this.long2bignum = long2bignum;
+	this.long2number = long2number;
 	this.nextRequestNo = 1;
 	this.nextResponseNo = 1;
 	var self = this;
@@ -58,7 +58,7 @@ Connection.prototype.listen = function() {
 					err = new Error(buffer.toString("ascii", 9, length - 1));
 				} else {
 					try {
-						o = libc.deserialize(buffer, self.nanos2date, self.flipTables, self.emptyChar2null, self.long2bignum);
+						o = libc.deserialize(buffer, self.nanos2date, self.flipTables, self.emptyChar2null, self.long2number);
 						err = undefined;
 					} catch (e) {
 						o = null;
@@ -194,7 +194,7 @@ function connect(params, cb) {
 	assert.optionalBool(params.nanos2date, "params.nanos2date");
 	assert.optionalBool(params.flipTables, "params.flipTables");
 	assert.optionalBool(params.emptyChar2null, "params.emptyChar2null");
-	assert.optionalBool(params.long2bignum, "params.long2bignum");
+	assert.optionalBool(params.long2number, "params.long2number");
 	if (params.user !== undefined) {
 		assert.string(params.password, "password");
 		auth = params.user + ":" + params.password;
@@ -214,7 +214,7 @@ function connect(params, cb) {
 		socket.removeListener("error", errorcb);
 		if (error === false) {
 			socket.once("close", closecb);
-			var con = new Connection(socket, params.nanos2date, params.flipTables, params.emptyChar2null, params.emptyChar2null, params.long2bignum);
+			var con = new Connection(socket, params.nanos2date, params.flipTables, params.emptyChar2null, params.emptyChar2null, params.long2number);
 			con.auth(auth, function() {
 				socket.removeListener("close", closecb);
 				if (close === false) {

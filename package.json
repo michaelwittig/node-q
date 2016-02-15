@@ -1,6 +1,6 @@
 {
 	"name": "node-q",
-	"version": "2.0.0-rc.1",
+	"version": "2.0.0-rc.2",
 	"description": "Q interfacing with Node.js",
 	"keywords": ["q", "kx", "kdb+", "kdb+tick", "interfacing"],
 	"main": "index.js",
@@ -11,7 +11,7 @@
 	"author": "Michael Wittig <post@michaelwittig.info>",
 	"license": "MIT",
 	"dependencies": {
-		"bignum": "0.11.0",
+		"long": "3.0.3",
 		"node-uuid": "1.4.7"
 	},
 	"devDependencies": {

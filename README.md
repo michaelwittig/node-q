@@ -130,7 +130,7 @@ q has more [data types](http://code.kx.com/wiki/Reference/Datatypes) than JavaSc
 * <a name="types-footnote2">2</a>: think about running your Node.js process with `TZ=UTC node ...` to run in UTC timezone. q doesn't know timezones.
 * <a name="types-footnote3">3</a>: date is set to `2000-01-01` in the Date object. Only evaluate the time part.
 * <a name="types-footnote4">4</a>: You can disable `emptyChar2null` deserialization during `connect(params, cb)` to keep the empty char.
-* <a name="types-footnote5">5</a>: You can enable `long2bignum` deserialization during `connect(params, cb)` to represent longs as [bignum](https://www.npmjs.com/package/bignum).
+* <a name="types-footnote5">5</a>: You can disable `long2number` deserialization during `connect(params, cb)` to represent longs as [long.js](https://www.npmjs.com/package/long).
 
 #### dict
 
@@ -230,7 +230,7 @@ For every primitive type in q, this module exports a method to wrap the JavaScri
 | byte | `byte(Number)`| `bytes(Array[Number])` |
 | short | `short(Number)` | `shorts(Array[Number])` |
 | int | `int(Number)` | `ints(Array[Number])` |
-| long | `long(bignum)` <sup>[1](#wrappers-footnote1)</sup> | `longs(Array[bignum])` <sup>[1](#wrappers-footnote1)</sup> |
+| long | `long(long)` <sup>[1](#wrappers-footnote1)</sup> | `longs(Array[long])` <sup>[1](#wrappers-footnote1)</sup> |
 | real | `real(Number)` | `reals(Array[Number])` |
 | float | `float(Number)` | `floats(Array[Number])` |
 | char | `char(String)` | `chars(Array[String])` |
@@ -244,7 +244,7 @@ For every primitive type in q, this module exports a method to wrap the JavaScri
 | second | `second(Date)` | `seconds(Array[Date])` |
 | time | `time(Date)` | `times(Array[Date])` |
 
-* <a name="wrappers-footnote1">1</a>: JavaScript can not represent 64bit longs. Therefore this module uses the [bignum](https://www.npmjs.com/package/bignum) module to represent longs.
+* <a name="wrappers-footnote1">1</a>: JavaScript can not represent 64bit longs. Therefore this module uses the [long.js](https://www.npmjs.com/package/long) module to represent longs.
 
 ## API
 
@@ -260,7 +260,7 @@ For every primitive type in q, this module exports a method to wrap the JavaScri
 	* `nanos2date`: Boolean (optional, default: true)
 	* `flipTables`: Boolean (optional, default: true)
 	* `emptyChar2null`: Boolean (optional, default: true)
-	* `long2bignum`: Boolean (optional, default: false)
+	* `long2number`: Boolean (optional, default: true)
 * `cb`: Function(`err`, `con`)
 	* `err`: `Error` or `undefined`
 	* `conn`: `Connection` or `undefined`
