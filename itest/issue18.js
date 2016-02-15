@@ -9,7 +9,7 @@ describe("issue 18", function() {
     nodeq.connect({host: "localhost", port: 5000}, function(err, c) {
       if (err) { throw err; }
       async.each([
-        'numtests:100; timerange:10D; freq:0D00:05',
+        "numtests:100; timerange:10D; freq:0D00:05",
         "testid:(til numtests)!000000999999+numtests?20",
         "fcn:numtests*fc:`long$timerange%freq",
         "tests:([]time:(-0D00:00:10 + fcn?0D00:00:20)+fcn#(.z.p - timerange)+freq*til fc; test:raze fc#'key testid; testin:fcn?16741128383987; testout:fcn?16741128383987)"

@@ -978,6 +978,9 @@ describe("c", function() {
 						});
 					});
 				});
+				it("mixedlist", function() { // (1j;1b;3h)
+					assert.equal(bin_to_hexstr(c.serialize(typed.mixedlist([typed.long(Long.fromString("1", false, 10)), typed.boolean(true), typed.short(3)]))), "010000001c000000000003000000f90100000000000000ff01fb0300");
+				});
 				describe("dict", function() {
 					it("one key", function() {
 						assert.equal(bin_to_hexstr(c.serialize(typed.dict({a: typed.byte(1)}))), "0100000018000000630b0001000000610004000100000001");

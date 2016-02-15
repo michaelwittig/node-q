@@ -20,7 +20,7 @@ describe("unicode", function() {
   });
   describe("string", function() {
     it("count", function(done) {
-      con.k('count', '你好', function(err, res) {
+      con.k("count", "你好", function(err, res) {
         if (err) { throw err; }
         assert.equal(res, 6, "res");
         done();
@@ -36,7 +36,7 @@ describe("unicode", function() {
   });
   describe("symbol", function() {
     it("count", function(done) {
-      con.k('count', '`你好', function(err, res) {
+      con.k("count", "`你好", function(err, res) {
         if (err) { throw err; }
         assert.equal(res, 1, "res");
         done();
@@ -52,7 +52,7 @@ describe("unicode", function() {
   });
   describe("symbols", function() {
     it("count", function(done) {
-      con.k('count', ['`你好', '`你好', '`你好'], function(err, res) {
+      con.k("count", ["`你好", "`你好", "`你好"], function(err, res) {
         if (err) { throw err; }
         assert.equal(res, 3, "res");
         done();
