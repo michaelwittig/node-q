@@ -214,7 +214,7 @@ function connect(params, cb) {
 		socket.removeListener("error", errorcb);
 		if (error === false) {
 			socket.once("close", closecb);
-			var con = new Connection(socket, params.nanos2date, params.flipTables, params.emptyChar2null, params.emptyChar2null, params.long2number);
+			var con = new Connection(socket, params.nanos2date, params.flipTables, params.emptyChar2null, params.long2number);
 			con.auth(auth, function() {
 				socket.removeListener("close", closecb);
 				if (close === false) {
