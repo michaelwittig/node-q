@@ -103,7 +103,7 @@ Connection.prototype.auth = function(auth, cb) {
 				cb();
 			} else {
 				cb(new Error("Invalid capability byte from server"));
-			}	
+			}
 		} else {
 			cb(new Error("Invalid auth response from server"));
 		}
@@ -111,7 +111,6 @@ Connection.prototype.auth = function(auth, cb) {
 };
 Connection.prototype.k = function(s, cb) {
 	"use strict";
-	assert.string(s, "s");
 	cb = arguments[arguments.length - 1];
 	assert.func(cb, "cb");
 	var self = this,
@@ -119,18 +118,26 @@ Connection.prototype.k = function(s, cb) {
 		b,
 		requestNo = this.nextRequestNo;
 	this.nextRequestNo += 1;
-	if (arguments.length === 2) {
-		payload = s;
-	} else {
-		payload = Array.prototype.slice.call(arguments, 0, arguments.length - 1);
-	}
-	b = libc.serialize(payload);
-	b.writeUInt8(0x1, 1); // MsgType: 1 := sync
-	this.socket.write(b, function() {
+	if (arguments.length === 1) {
+		// Listen for async responses
 		self.once("response:" + requestNo, function(err, o) {
 			cb(err, o);
 		});
-	});
+	} else {
+		assert.string(s, "s");
+		if (arguments.length === 2) {
+			payload = s;
+		} else {
+			payload = Array.prototype.slice.call(arguments, 0, arguments.length - 1);
+		}
+		b = libc.serialize(payload);
+		b.writeUInt8(0x1, 1); // MsgType: 1 := sync
+		this.socket.write(b, function() {
+			self.once("response:" + requestNo, function(err, o) {
+				cb(err, o);
+			});
+		});
+	}
 };
 Connection.prototype.ks = function(s, cb) {
 	"use strict";
