@@ -79,6 +79,15 @@ con.ks("show", [1, 2, 3], function(err) {
 });
 ```
 
+### Listen to a handle
+
+```javascript
+con.k(function(err, res) {
+	if (err) throw err;
+	console.log('result'm res);
+});
+```
+
 ### Subscribe to kdb+tick
 
 ```javascript
