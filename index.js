@@ -72,6 +72,10 @@ Connection.prototype.listen = function() {
 				} else {
 					if (err === undefined && Array.isArray(o) && o[0] === "upd") {
 						self.emit("upd", o[1], o[2]);
+					} else {
+						responseNo = self.nextResponseNo;
+						self.nextResponseNo += 1;
+						self.emit("response:" + responseNo, err, o);
 					}
 				}
 				if (buffer.length > length) {

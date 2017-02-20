@@ -29,7 +29,7 @@ nodeq.connect({host: "localhost", port: 5000}, function(err, con) {
 
 ```javascript
 var nodeq = require("node-q");
-nodeq.connect({host: "localhost", port: "localhost", 5000, user: "user", password: "password"}, function(err, con) {
+nodeq.connect({host: "localhost", port: 5000, user: "user", password: "password"}, function(err, con) {
 	if (err) throw err;
 	console.log("connected");
 	// interact with con like demonstrated below
@@ -76,6 +76,15 @@ con.ks("show 1 2 3", function(err) {
 ```javascript
 con.ks("show", [1, 2, 3], function(err) {
 	if (err) throw err;
+});
+```
+
+### Listen to a handle
+
+```javascript
+con.k(function(err, res) {
+	if (err) throw err;
+	console.log('result', res);
 });
 ```
 

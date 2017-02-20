@@ -65,6 +65,21 @@ describe("readme", function() {
   it("Async execute function with parameters", function(done) {
     con.ks("show", [1, 2, 3], done);
   });
+  it("Async execute and get async response", function(done) {
+    con.ks("show 1;neg[.z.w][33]", function(err) {
+      if (err) {
+        throw err;
+      }
+    });
+    con.k(function(err, res) {
+      if (err) {
+        done(err);
+      } else {
+        assert.equal(res, 33);
+        done();
+      }
+    });
+  });
   it("Subscribe to kdb+tick", function(done) {
     con.once("upd", function(table, data) {
       assert.equal(table, "trade");
