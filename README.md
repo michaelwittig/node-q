@@ -84,16 +84,7 @@ con.ks("show", [1, 2, 3], function(err) {
 ```javascript
 con.k(function(err, res) {
 	if (err) throw err;
-	console.log('result', res);
-});
-```
-
-### Listen to a handle
-
-```javascript
-con.k(function(err, res) {
-	if (err) throw err;
-	console.log('result'm res);
+	console.log("result", res);
 });
 ```
 
@@ -371,7 +362,7 @@ If you have a kdb+tick setup please also run `make mochait`.
 
 ### Integration Test
 
-Assumes running kdb+tick process on localhost:5000!
+Assumes a running q process on port 5000 with kdb+tick available in QHOME (`QHOME=~/q ~/q/m32/q -p 5000`)
 
 	make mochait
 
