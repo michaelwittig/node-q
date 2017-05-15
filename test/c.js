@@ -369,6 +369,9 @@ describe("c", function() {
 				it("generic", function() { // (1j;1b;3h)
 					assert.deepEqual(c.deserialize(hexstr_to_bin("010000001c000000000003000000f90100000000000000ff01fb0300")), [1, true, 3]);
 				});
+				it("null", function() { // (::;::;::)
+					assert.deepEqual(c.deserialize(hexstr_to_bin("0100000014000000000003000000650065006500")), [null, null, null]);
+				});
 				describe("list of list", function() {
 					it("same types", function() { // enlist (1f;2f;3f)
 						assert.deepEqual(c.deserialize(hexstr_to_bin("010000002c000000000001000000090003000000000000000000f03f00000000000000400000000000000840")), [[1, 2, 3]]);
@@ -578,6 +581,9 @@ describe("c", function() {
 				it("multiple entries different types", function() {
 					assert.deepEqual(c.deserialize(hexstr_to_bin("010000002f000000630b0003000000610062006300000003000000f90100000000000000ff01f70000000000000840")), {a: 1, b: true, c: 3});
 				});
+				it("multiple entries, null values", function() {
+					assert.deepEqual(c.deserialize(hexstr_to_bin("0100000021000000630b0003000000610062006300000003000000650065006500")), {a: null, b: null, c: null});
+				});
 			});
 			describe("table", function() {
 				describe("flipTables", function() {
@@ -646,11 +652,17 @@ describe("c", function() {
 					it("one key", function() {
 						assert.equal(bin_to_hexstr(c.serialize({a: 1})), "010000001f000000630b00010000006100090001000000000000000000f03f");
 					});
+					it("one key, null value", function() {
+						assert.equal(bin_to_hexstr(c.serialize({a: null})), "0100000019000000630b000100000061000000010000006500");
+					});
 					it("multiple keys, same value type", function() {
 						assert.equal(bin_to_hexstr(c.serialize({a: 1, b: 2, c: 3})), "0100000033000000630b0003000000610062006300090003000000000000000000f03f00000000000000400000000000000840");
 					});
 					it("multiple keys, different value types", function() {
 						assert.equal(bin_to_hexstr(c.serialize({a: 1, b: true, c: 3})), "010000002f000000630b0003000000610062006300000003000000f7000000000000f03fff01f70000000000000840");
+					});
+					it("multiple keys, null value", function() {
+						assert.equal(bin_to_hexstr(c.serialize({a: null, b: null, c: null})), "0100000021000000630b0003000000610062006300000003000000650065006500");
 					});
 				});
 				describe("Array", function() {
@@ -671,6 +683,12 @@ describe("c", function() {
 					});
 					it("Array of Array different types", function() {
 						assert.equal(bin_to_hexstr(c.serialize([[1, true, 3]])), "0100000028000000000001000000000003000000f7000000000000f03fff01f70000000000000840");
+					});
+					it("one null", function() {
+						assert.equal(bin_to_hexstr(c.serialize([null])), "01000000100000000000010000006500");
+					});
+					it("three nulls", function() {
+						assert.equal(bin_to_hexstr(c.serialize([null, null, null])), "0100000014000000000003000000650065006500");
 					});
 				});
 				it("Null", function() {
