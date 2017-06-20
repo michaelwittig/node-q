@@ -39,7 +39,6 @@ Connection.prototype.listen = function() {
 			length, // current msg length
 			o, // deserialized object
 			err, // deserialize error
-			type,
 			responseNo;
 
 		if (self.chunk.length !== 0) {
@@ -52,18 +51,12 @@ Connection.prototype.listen = function() {
 		while (buffer.length >= 8) {
 			length = buffer.readUInt32LE(4);
 			if (buffer.length >= length) {
-				type = buffer.readInt8(8);
-				if (type === -128) { // error type
-					o = undefined;
-					err = new Error(buffer.toString("ascii", 9, length - 1));
-				} else {
-					try {
-						o = libc.deserialize(buffer, self.nanos2date, self.flipTables, self.emptyChar2null, self.long2number);
-						err = undefined;
-					} catch (e) {
-						o = null;
-						err = e;
-					}
+				try {
+					o = libc.deserialize(buffer, self.nanos2date, self.flipTables, self.emptyChar2null, self.long2number);
+					err = undefined;
+				} catch (e) {
+					o = null;
+					err = e;
 				}
 				if (buffer.readUInt8(1) === 2) { // MsgType: 2 := response
 					responseNo = self.nextResponseNo;
