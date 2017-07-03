@@ -64,7 +64,7 @@ Connection.prototype.listen = function() {
 					self.emit("response:" + responseNo, err, o);
 				} else {
 					if (err === undefined && Array.isArray(o) && o[0] === "upd") {
-						self.emit("upd", o[1], o[2]);
+						events.EventEmitter.prototype.emit.apply(self, o);
 					} else {
 						responseNo = self.nextResponseNo;
 						self.nextResponseNo += 1;
