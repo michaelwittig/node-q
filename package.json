@@ -10,6 +10,7 @@
     "interfacing"
   ],
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "test": "make test",
     "itest": "make itest"
@@ -22,13 +23,16 @@
     "node-uuid": "1.4.7"
   },
   "devDependencies": {
+    "@types/long": "^3.0.31",
+    "@types/node": "^8.0.8",
     "async": "1.5.2",
-    "mocha": "2.4.5",
+    "istanbul": "0.4.2",
     "jshint": "2.9.1",
     "madge": "0.5.3",
-    "npmedge": "0.2.2",
+    "mocha": "2.4.5",
     "moment": "2.11.2",
-    "istanbul": "0.4.2"
+    "npmedge": "0.2.2",
+    "typescript": "^2.4.1"
   },
   "repository": {
     "type": "git",
