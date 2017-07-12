@@ -13,7 +13,7 @@ export declare type AsyncCallback = (error: Error | undefined) => void;
  * @param error - This parameter will be undefined if the call was successful, or an error if not.
  * @param value - This parameter will be undefined if the call was not successful, or the return value if it was successful.
  */
-export declare type AsyncValueCallback<T> = (error: Error | undefined, value: T | undefined) => void;
+export declare type AsyncValueCallback<T = any> = (error: Error | undefined, value: T | undefined) => void;
 
 /**
  * The events that can be raised by the Connection class and the event listener types.
@@ -63,18 +63,23 @@ export declare class Connection extends events.EventEmitter {
    */
   close(callback?: () => void): void;
   /**
+   * Listen to a handle.
+   * @param callback The callback to be invoked when the results are available or an error is to be reported.
+   */
+  k(callback: AsyncValueCallback): void;
+  /**
    * Execute a statement synchronously against KDB and return the result when available via the callback.
    * @param statement The statement to execute against KDB.
    * @param callback The callback to be invoked when the results are available or an error is to be reported.
    */
-  k(statement: string, callback: AsyncValueCallback<any>): void;
+  k(statement: string, callback: AsyncValueCallback): void;
   /**
    * Execute a statement synchronously against KDB that takes a single parameter and return the result when available via the callback.
    * @param statement The statement to execute against KDB.
    * @param parameter The parameter to pass to KDB.
    * @param callback The callback to be invoked when the results are available or an error is to be reported.
    */
-  k(statement: string, parameter: any, callback: AsyncValueCallback<any>): void;
+  k(statement: string, parameter: any, callback: AsyncValueCallback): void;
   /**
    * Execute a statement synchronously against KDB that takes an arbitrary number of parameters.  The last element in the rest array must be an AsyncValueCallback.
    * @param statement The statement to execute against KDB.
@@ -183,7 +188,7 @@ export declare interface ConnectionParameters {
    */
   nanos2date?: boolean;
   /**
-   * Should this connection flip tabls (defaults to true).
+   * Should this connection flip tables (defaults to true).
    */
   flipTables?: boolean;
   /**
