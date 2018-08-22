@@ -259,8 +259,11 @@ describe("c", function() {
 					it("lenth 5", function() { // `abcde
 						assert.equal(c.deserialize(hexstr_to_bin("010000000f000000f5616263646500")), "abcde");
 					});
-					it("unicode", function() { // `$"你"
+					it("unicode length 1", function() { // `$"你"
 						assert.equal(c.deserialize(hexstr_to_bin("010000000d000000f5e4bda000")), "你");
+					});
+					it("unicode length 2", function() { // `$"你好"
+						assert.equal(c.deserialize(hexstr_to_bin("0100000010000000f5e4bda0e5a5bd00")), "你好");
 					});
 				});
 				describe("nanos2date", function() {
@@ -624,8 +627,11 @@ describe("c", function() {
 				it("symbol length 1", function() {
 					assert.equal(bin_to_hexstr(c.serialize("`a")), "010000000b000000f56100");
 				});
-				it("symbol unicode", function() {
+				it("symbol unicode length 1", function() {
 					assert.equal(bin_to_hexstr(c.serialize("`你")), "010000000d000000f5e4bda000");
+				});
+				it("symbol unicode length 2", function() {
+					assert.equal(bin_to_hexstr(c.serialize("`你好")), "0100000010000000f5e4bda0e5a5bd00");
 				});
 				it("symbol length 2", function() { // `ab
 					assert.equal(bin_to_hexstr(c.serialize("`ab")), "010000000c000000f5616200");
