@@ -33,7 +33,7 @@ util.inherits(Connection, events.EventEmitter);
 Connection.prototype.listen = function() {
 	"use strict";
 	var self = this;
-	this.chunk = new Buffer(0);
+	this.chunk = Buffer.alloc(0);
 	this.socket.on("data", function(inbuffer) {
 		var buffer,
 			length, // current msg length
@@ -42,7 +42,7 @@ Connection.prototype.listen = function() {
 			responseNo;
 
 		if (self.chunk.length !== 0) {
-			buffer = new Buffer(self.chunk.length + inbuffer.length);
+			buffer = Buffer.alloc(self.chunk.length + inbuffer.length);
 			self.chunk.copy(buffer);
 			inbuffer.copy(buffer, self.chunk.length);
 		} else {
@@ -74,7 +74,7 @@ Connection.prototype.listen = function() {
 				if (buffer.length > length) {
 					buffer = buffer.slice(length);
 				} else {
-					buffer = new Buffer(0);
+					buffer = Buffer.alloc(0);
 				}
 			} else {
 				break;
@@ -87,7 +87,7 @@ Connection.prototype.listen = function() {
 Connection.prototype.auth = function(auth, cb) {
 	"use strict";
 	var n = Buffer.byteLength(auth, "ascii"),
-		b = new Buffer(n + 2),
+		b = Buffer.alloc(n + 2),
 		self = this;
 	b.write(auth, 0, n, "ascii"); // auth (username:password)
 	b.writeUInt8(0x3, n); // capability byte (compression, timestamp, timespan) http://code.kx.com/wiki/Reference/ipcprotocol#Handshake

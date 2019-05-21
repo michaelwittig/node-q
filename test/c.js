@@ -6,7 +6,7 @@ var c = require("../lib/c.js"),
 
 function hexstr_to_bin(str) {
 	"use strict";
-	return new Buffer(str, "hex");
+	return Buffer.from(str, "hex");
 }
 
 function bin_to_hexstr(b) {
