@@ -61,5 +61,5 @@
 	"yui"           : false,
 	"globals"       : {},
 	"predef"        : ["describe", "it", "before", "after"],
-    "esversion"     : 6
+        "esversion"     : 6
 }
