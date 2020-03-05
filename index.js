@@ -215,16 +215,14 @@ function connect(params, cb) {
 		close = true;
 		cb(new Error("Connection closes (wrong auth?)"));
 	};
-
-	let socketArgs = [];
+	var socketArgs = [];
 	if (params.unixSocket) {
 		socketArgs.push(params.unixSocket);
 	}
 	else {
 		socketArgs.push(params.port, params.host);
 	}
-
-	socket = net.connect(...socketArgs, function() {
+	socketArgs.push(function() {
 		socket.removeListener("error", errorcb);
 		if (error === false) {
 			socket.once("close", closecb);
@@ -237,6 +235,7 @@ function connect(params, cb) {
 			});
 		}
 	});
+	socket = net.connect.apply(null, socketArgs);
 	if (params.socketTimeout !== undefined) {
 		socket.setTimeout(params.socketTimeout);
 	}
