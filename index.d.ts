@@ -162,11 +162,11 @@ export declare interface ConnectionParameters {
   /**
    * The KDB host to connect to.
    */
-  host: string;
+  host?: string;
   /**
    * The port on the KDB host to connect to.
    */
-  port: number;
+  port?: number;
   /**
    * Optional - The user to authenticate as to KDB.
    */
@@ -200,6 +200,10 @@ export declare interface ConnectionParameters {
    * Specifying false will cause KDB longs to be returned using long.js.
    */
   long2number?: boolean;
+  /**
+   * Connect with Unix Domain Sockets rather than TCP
+   */
+  unixSocket?: string;
 }
 
 /**
@@ -216,7 +220,7 @@ export declare function connect(parameters: ConnectionParameters, callback: Asyn
  */
 export declare function connect(host: string, port: number, callback: AsyncValueCallback<Connection>): void;
 /**
- * Attempt to connect to aKDB instance using the specified host, port, username and password, and return the connection when it is established.
+ * Attempt to connect to a KDB instance using the specified host, port, username and password, and return the connection when it is established.
  * @param host The KDB host to connect to.
  * @param port The port on the host to connect to.
  * @param user The user to authenticate to KDB with.
@@ -224,6 +228,12 @@ export declare function connect(host: string, port: number, callback: AsyncValue
  * @param callback Callback to be invoked when the connection is (or fails to be) established.
  */
 export declare function connect(host: string, port: number, user: string, password: string, callback: AsyncValueCallback<Connection>): void;
+/**
+ * Attempt to connect to KDB using Unix Domain Sockets, and return the connection when it is established.
+ * @param unixSocket Path to KDB Unix Domain Socket (Doesn't support abstract namespace sockets: KDB3.5+ on Linux)
+ * @param callback Callback to be invoked when the connection is (or fails to be) established.
+ */
+export declare function connect(unixSocket: string, callback: AsyncValueCallback<Connection>): void;
 /**
  * Brings in the Typed wrapper APIs.
  */
