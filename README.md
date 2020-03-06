@@ -25,7 +25,7 @@ nodeq.connect({host: "localhost", port: 5000}, function(err, con) {
 });
 ```
 
-#### Create Connection with user and password auth
+### Create Connection with user and password auth
 
 ```javascript
 var nodeq = require("node-q");
@@ -33,6 +33,15 @@ nodeq.connect({host: "localhost", port: 5000, user: "user", password: "password"
 	if (err) throw err;
 	console.log("connected");
 	// interact with con like demonstrated below
+});
+```
+
+### Create Connection with Unix Domain Socket (Doesn't support abstract namespace sockets: KDB 3.5+ on Linux)
+
+```javascript
+nodeq.connect({ unixSocket: "/path/to/socket" }, function(err, con) {
+	if (err) throw err;
+	console.log("connected");
 });
 ```
 
@@ -260,8 +269,9 @@ For every primitive type in q, this module exports a method to wrap the JavaScri
 ### connect(params, cb)
 
 * `params`: Object
-	* `host`: String (e. g. "localhost")
-	* `port`: Number (e. g. 5000)
+	* `host`: String (e. g. "localhost") (optional)
+	* `port`: Number (e. g. 5000) (optional)
+	* `unixSocket`: String (e. g. "/path/to/socket") (optional)
 	* `user`: String (optional)
 	* `password`: String (optional)
 	* `socketNoDelay` : Boolean (optional, see http://nodejs.org/api/net.html#net_socket_setnodelay_nodelay)
