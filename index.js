@@ -174,18 +174,21 @@ function connect(params, cb) {
 		close = false;
 	if (typeof params !== "object") {
 		params = {};
-		if (arguments.length === 3) {
+		if (arguments.length === 2) {
+			params.unixSocket = arguments[0];
+			cb = arguments[1];
+		} else if (arguments.length === 3) {
 			params.host = arguments[0];
 			params.port = arguments[1];
-			cb = arguments[arguments.length -1];
+			cb = arguments[2];
 		} else if (arguments.length === 5) {
 			params.host = arguments[0];
 			params.port = arguments[1];
 			params.user = arguments[2];
 			params.password = arguments[3];
-			cb = arguments[arguments.length -1];
+			cb = arguments[4];
 		} else {
-			throw new Error("only three or five arguments allowed");
+			throw new Error("only two, three or five arguments allowed");
 		}
 	}
 	assert.object(params, "params");
