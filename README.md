@@ -1,7 +1,3 @@
-[![Build Status](https://secure.travis-ci.org/michaelwittig/node-q.png)](http://travis-ci.org/michaelwittig/node-q)
-[![NPM version](https://badge.fury.io/js/node-q.png)](http://badge.fury.io/js/node-q)
-[![NPM dependencies](https://david-dm.org/michaelwittig/node-q.png)](https://david-dm.org/michaelwittig/node-q)
-
 # node-q
 
 Q interfacing with Node.js. Supports [decompression](http://code.kx.com/wiki/Reference/ipcprotocol#Compression). Can deserialize all q data types (including `guid`) to JavaScript. Can serialize all JavaScript data types to q.
