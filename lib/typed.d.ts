@@ -1,5 +1,3 @@
-/// <reference types="long" />
-
 /**
  * Explicit serialization to KDB is possible using the Typed API.
  */
@@ -53,7 +51,7 @@ export declare function int(value: number): Typed;
  * Explicitly wrap the specified value as a long.
  * @param value The value to wrap.
  */
-export declare function long(value: Long): Typed;
+export declare function long(value: number): Typed;
 /**
  * Explicitly wrap the specified value as a real.
  * @param value The value to wrap.
@@ -146,7 +144,7 @@ export declare function ints(value: number[] | ReadonlyArray<number>): Typed;
  * Explicitly wrap the specified array as a typed list of longs.
  * @param value The array to wrap.
  */
-export declare function longs(value: Long[] | ReadonlyArray<Long>): Typed;
+export declare function longs(value: number[] | ReadonlyArray<number>): Typed;
 /**
  * Explicitly wrap the specified array as a typed list of reals.
  * @param value The array to wrap.
