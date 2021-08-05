@@ -1,9 +1,11 @@
 var libc = require("./lib/c.js");
 var net = require("net");
+var tls = require("tls");
 var events = require("events");
 var util = require("util");
 var assert = require("./lib/assert.js");
 var typed = require("./lib/typed.js");
+const { TLSSocket } = require("tls");
 
 function Connection(socket, nanos2date, flipTables, emptyChar2null, long2number) {
 	"use strict";
@@ -203,6 +205,7 @@ function connect(params, cb) {
 	assert.optionalBool(params.emptyChar2null, "params.emptyChar2null");
 	assert.optionalBool(params.long2number, "params.long2number");
 	assert.optionalString(params.unixSocket, "params.unixSocket");
+	assert.optionalBool(params.useTLS, "params.useTLS");
 	if (params.user !== undefined) {
 		assert.string(params.password, "password");
 		auth = params.user + ":" + params.password;
@@ -241,7 +244,16 @@ function connect(params, cb) {
 			});
 		}
 	});
-	socket = net.connect.apply(null, socketArgs);
+
+	if (params.useTLS) {
+		console.log("using TLS")
+		
+		socket = tls.connect.apply(null, socketArgs)
+	} else {
+		console.log("NO TLS")
+		socket = net.connect.apply(null, socketArgs)
+	}
+	
 	if (params.socketTimeout !== undefined) {
 		socket.setTimeout(params.socketTimeout);
 	}
