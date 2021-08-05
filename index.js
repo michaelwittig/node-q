@@ -230,6 +230,9 @@ function connect(params, cb) {
 		if (error === false) {
 			socket.once("close", closecb);
 			var con = new Connection(socket, params.nanos2date, params.flipTables, params.emptyChar2null, params.long2number);
+			con.once("error", function(err) {
+				cb(err)
+			})
 			con.auth(auth, function() {
 				socket.removeListener("close", closecb);
 				if (close === false) {
