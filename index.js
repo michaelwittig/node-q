@@ -245,12 +245,9 @@ function connect(params, cb) {
 		}
 	});
 
-	if (params.useTLS) {
-		console.log("using TLS")
-		
+	if (params.useTLS) {		
 		socket = tls.connect.apply(null, socketArgs)
 	} else {
-		console.log("NO TLS")
 		socket = net.connect.apply(null, socketArgs)
 	}
 	
