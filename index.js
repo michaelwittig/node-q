@@ -234,6 +234,7 @@ function connect(params, cb) {
 			socket.once("close", closecb);
 			var con = new Connection(socket, params.nanos2date, params.flipTables, params.emptyChar2null, params.long2number);
 			con.once("error", function(err) {
+				socket.removeListener("close", closecb);
 				cb(err)
 			})
 			con.auth(auth, function() {
