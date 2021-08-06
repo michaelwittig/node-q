@@ -16,4 +16,11 @@ describe("tls", function() {
       done()
     });
   })
+
+  it("should fail if useTLS is true and endpoint doesn't expect it", function(done) {
+    nodeq.connect({host: "localhost", port: 5000, useTLS: true}, function(err) {
+      assert.ok(err)
+      done()
+    });
+  })
 });
