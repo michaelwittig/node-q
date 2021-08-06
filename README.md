@@ -368,7 +368,7 @@ If you have a kdb+tick setup please also run `make mochait`.
 
 ### Integration Test
 
-Assumes a running q process on port 5000 with kdb+tick available in QHOME (`QHOME=~/q ~/q/m32/q -p 5000`)
+Assumes a running q process on port 5000 with kdb+tick available in QHOME (`QHOME=~/q ~/q/m32/q -p 5000`). For the tls tests you will also need a running q process on port 6000 set up to require tls. Instructions for this can be found [here](https://code.kx.com/q/kb/ssl/). If you are using a self signed certificate you will also need to set the `NODE_TLS_REJECT_UNAUTHORIZED` environment variable to `0`.
 
 	make mochait
 
