@@ -5,7 +5,6 @@ var events = require("events");
 var util = require("util");
 var assert = require("./lib/assert.js");
 var typed = require("./lib/typed.js");
-const { TLSSocket } = require("tls");
 
 function Connection(socket, nanos2date, flipTables, emptyChar2null, long2number) {
 	"use strict";
