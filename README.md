@@ -21,6 +21,17 @@ nodeq.connect({host: "localhost", port: 5000}, function(err, con) {
 });
 ```
 
+### Create TLS Connection
+
+```javascript
+var nodeq = require("node-q");
+nodeq.connect({host: "localhost", port: 6000, useTLS: true}, function(err, con) {
+	if (err) throw err;
+	console.log("connected");
+	// interact with con like demonstrated below
+});
+```
+
 ### Create Connection with user and password auth
 
 ```javascript
@@ -270,6 +281,7 @@ For every primitive type in q, this module exports a method to wrap the JavaScri
 	* `unixSocket`: String (e. g. "/path/to/socket") (optional)
 	* `user`: String (optional)
 	* `password`: String (optional)
+	* `useTLS`: Boolean (optional)
 	* `socketNoDelay` : Boolean (optional, see http://nodejs.org/api/net.html#net_socket_setnodelay_nodelay)
 	* `socketTimeout`: Number (optional, see http://nodejs.org/api/net.html#net_socket_settimeout_timeout_callback)
 	* `nanos2date`: Boolean (optional, default: true)
