@@ -234,8 +234,8 @@ function connect(params, cb) {
 			var con = new Connection(socket, params.nanos2date, params.flipTables, params.emptyChar2null, params.long2number);
 			con.once("error", function(err) {
 				socket.removeListener("close", closecb);
-				cb(err)
-			})
+				cb(err);
+			});
 			con.auth(auth, function() {
 				socket.removeListener("close", closecb);
 				if (close === false) {
@@ -246,9 +246,9 @@ function connect(params, cb) {
 	});
 
 	if (params.useTLS) {		
-		socket = tls.connect.apply(null, socketArgs)
+		socket = tls.connect.apply(null, socketArgs);
 	} else {
-		socket = net.connect.apply(null, socketArgs)
+		socket = net.connect.apply(null, socketArgs);
 	}
 	
 	if (params.socketTimeout !== undefined) {
