@@ -1,3 +1,4 @@
+"use strict";
 var c = require("../lib/c.js"),
   typed = require("../lib/typed.js"),
   moment = require("moment"),
@@ -5,19 +6,16 @@ var c = require("../lib/c.js"),
   Long = require("long");
 
 function hexstr_to_bin(str) {
-  "use strict";
   return new Buffer(str, "hex");
 }
 
 function bin_to_hexstr(b) {
-  "use strict";
   return b.toString("hex");
 }
 
 // use -18! in q to get the compressed byte representation
 
 describe("compress", function() {
-  "use strict";
   describe("deserialize", function() {
     describe("little", function() {
       describe("list", function() {

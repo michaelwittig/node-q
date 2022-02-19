@@ -1,8 +1,8 @@
+"use strict";
 var nodeq = require("../index.js"),
   assert = require("assert");
 
 describe("flipTables", function() {
-  "use strict";
   describe("default", function() {
     var con;
     before(function(done) {

@@ -1,9 +1,9 @@
+"use strict";
 var nodeq = require("../index.js"),
 	assert = require("assert"),
 	os = require("os");
 
 describe("compression", function() {
-	"use strict";
 	var con;
 	before(function(done) {
 		nodeq.connect({host: os.hostname(), port: 5000}, function(err, c) {

@@ -1,9 +1,9 @@
+"use strict";
 var nodeq = require("../index.js"),
 	assert = require("assert"),
 	async = require("async");
 
 describe("syncreqres", function() {
-	"use strict";
 	var con;
 	before(function(done) {
 		nodeq.connect({host: "localhost", port: 5000}, function(err, c) {

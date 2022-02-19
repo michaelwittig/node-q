@@ -1,9 +1,8 @@
+"use strict";
 var nodeq = require("../index.js"),
   assert = require("assert");
 
-describe("unicode", function() {
-  "use strict";
-  
+describe("unicode", function() {  
   var con;
   before(function(done) {
     nodeq.connect({host: "localhost", port: 5000}, function(err, c) {

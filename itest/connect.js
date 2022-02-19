@@ -1,7 +1,7 @@
+"use strict";
 var nodeq = require("../index.js");
 
 describe("connect", function() {
-	"use strict";
 	describe("old API", function() {
 		it("should work if enpoint is available", function(done) {
 			nodeq.connect("localhost", 5000, function(err) {
