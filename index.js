@@ -22,7 +22,7 @@ class Connection extends events.EventEmitter {
 	}
 
 	listen() {
-		this.chunk = new Buffer(0);
+		this.chunk = Buffer.alloc(0);
 		this.socket.on("data", (inbuffer) => {
 			let buffer,
 				length, // current msg length
@@ -31,7 +31,7 @@ class Connection extends events.EventEmitter {
 				responseNo;
 
 			if (this.chunk.length !== 0) {
-				buffer = new Buffer(this.chunk.length + inbuffer.length);
+				buffer = Buffer.alloc(this.chunk.length + inbuffer.length);
 				this.chunk.copy(buffer);
 				inbuffer.copy(buffer, this.chunk.length);
 			} else {
@@ -63,7 +63,7 @@ class Connection extends events.EventEmitter {
 					if (buffer.length > length) {
 						buffer = buffer.slice(length);
 					} else {
-						buffer = new Buffer(0);
+						buffer = Buffer.alloc(0);
 					}
 				} else {
 					break;
@@ -76,7 +76,7 @@ class Connection extends events.EventEmitter {
 
 	auth(auth, cb) {
 		const n = Buffer.byteLength(auth, "ascii"),
-			b = new Buffer(n + 2);
+			b = Buffer.alloc(n + 2);
 		b.write(auth, 0, n, "ascii"); // auth (username:password)
 		b.writeUInt8(0x3, n); // capability byte (compression, timestamp, timespan) http://code.kx.com/wiki/Reference/ipcprotocol#Handshake
 		b.writeUInt8(0x0, n+1); // zero terminated
