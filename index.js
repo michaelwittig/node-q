@@ -95,26 +95,26 @@ class Connection extends events.EventEmitter {
 		});
 	}
 
-	k(s, cb) {
-		cb = arguments[arguments.length - 1];
+	k(...params) {
+		const cb = params.pop();
 		assert.func(cb, "cb");
-		let payload,
-			b,
-			requestNo = this.nextRequestNo;
+		let payload;
+		const requestNo = this.nextRequestNo;
 		this.nextRequestNo += 1;
-		if (arguments.length === 1) {
+		if (params.length === 0) {
 			// Listen for async responses
 			this.once("response:" + requestNo, function(err, o) {
 				cb(err, o);
 			});
 		} else {
+			const s = params.shift();
 			assert.string(s, "s");
-			if (arguments.length === 2) {
+			if (params.length === 0) {
 				payload = s;
 			} else {
-				payload = Array.prototype.slice.call(arguments, 0, arguments.length - 1);
+				payload = [s, ...params];
 			}
-			b = libc.serialize(payload);
+			const b = libc.serialize(payload);
 			b.writeUInt8(0x1, 1); // MsgType: 1 := sync
 			this.socket.write(b, () => {
 				this.once("response:" + requestNo, function(err, o) {
@@ -124,18 +124,17 @@ class Connection extends events.EventEmitter {
 		}
 	}
 
-	ks(s, cb) {
+	ks(s, ...params) {
 		assert.string(s, "s");
-		cb = arguments[arguments.length - 1];
+		const cb = params.pop();
 		assert.func(cb, "cb");
-		let payload,
-			b;
-		if (arguments.length === 2) {
+		let payload;
+		if (params.length === 0) {
 			payload = s;
 		} else {
-			payload = Array.prototype.slice.call(arguments, 0, arguments.length - 1);
+			payload = [s, ...params];
 		}
-		b = libc.serialize(payload);
+		const b = libc.serialize(payload);
 		this.socket.write(b, function() {
 			cb();
 		});
@@ -153,71 +152,68 @@ class Connection extends events.EventEmitter {
 }
 
 
-function connect(params, cb) {
+function connect(...params) {
+	const cb = params.pop();
+
 	let auth,
-		errorcb,
-		closecb,
 		socket,
 		error = false,
-		close = false;
-	if (typeof params !== "object") {
-		params = {};
-		if (arguments.length === 2) {
-			params.unixSocket = arguments[0];
-			cb = arguments[1];
-		} else if (arguments.length === 3) {
-			params.host = arguments[0];
-			params.port = arguments[1];
-			cb = arguments[2];
-		} else if (arguments.length === 5) {
-			params.host = arguments[0];
-			params.port = arguments[1];
-			params.user = arguments[2];
-			params.password = arguments[3];
-			cb = arguments[4];
+		close = false,
+		config;
+
+	if (params.length === 1 && typeof params[0] === "object") {
+		[config] = params;
+	} else {
+		config = {};
+		if (params.length === 1) {
+			[config.unixSocket] = params;
+		} else if (params.length === 2) {
+			[config.host, config.port] = params;
+		} else if (params.length === 4) {
+			[config.host, config.port, config.user, config.password] = params;
 		} else {
 			throw new Error("only two, three or five arguments allowed");
 		}
 	}
-	assert.object(params, "params");
-	assert.optionalString(params.host, "params.host");
-	assert.optionalNumber(params.port, "params.port");
-	assert.optionalString(params.user, "params.user");
-	assert.optionalString(params.password, "password");
-	assert.optionalBool(params.socketNoDelay, "params.socketNoDelay");
-	assert.optionalNumber(params.socketTimeout, "params.socketTimeout");
-	assert.optionalBool(params.nanos2date, "params.nanos2date");
-	assert.optionalBool(params.flipTables, "params.flipTables");
-	assert.optionalBool(params.emptyChar2null, "params.emptyChar2null");
-	assert.optionalBool(params.long2number, "params.long2number");
-	assert.optionalString(params.unixSocket, "params.unixSocket");
-	if (params.user !== undefined) {
-		assert.string(params.password, "password");
-		auth = params.user + ":" + params.password;
+	assert.object(config, "params");
+	assert.optionalString(config.host, "params.host");
+	assert.optionalNumber(config.port, "params.port");
+	assert.optionalString(config.user, "params.user");
+	assert.optionalString(config.password, "password");
+	assert.optionalBool(config.socketNoDelay, "params.socketNoDelay");
+	assert.optionalNumber(config.socketTimeout, "params.socketTimeout");
+	assert.optionalBool(config.nanos2date, "params.nanos2date");
+	assert.optionalBool(config.flipTables, "params.flipTables");
+	assert.optionalBool(config.emptyChar2null, "params.emptyChar2null");
+	assert.optionalBool(config.long2number, "params.long2number");
+	assert.optionalString(config.unixSocket, "params.unixSocket");
+	if (config.user !== undefined) {
+		assert.string(config.password, "password");
+		auth = config.user + ":" + config.password;
 	} else {
 		auth = "anonymous";
 	}
 	assert.func(cb, "cb");
-	errorcb = function(err) {
+	const errorcb = function(err) {
 		error = true;
 		cb(err);
 	};
-	closecb = function() {
+	const closecb = function() {
 		close = true;
 		cb(new Error("Connection closes (wrong auth?)"));
 	};
 	const socketArgs = [];
-	if (params.unixSocket) {
-		socketArgs.push(params.unixSocket);
+	if (config.unixSocket) {
+		socketArgs.push(config.unixSocket);
 	}
 	else {
-		socketArgs.push(params.port, params.host);
+		socketArgs.push(config.port, config.host);
 	}
 	socketArgs.push(function() {
 		socket.removeListener("error", errorcb);
 		if (error === false) {
 			socket.once("close", closecb);
-			const con = new Connection(socket, params.nanos2date, params.flipTables, params.emptyChar2null, params.long2number);
+			const con = new Connection(socket, config.nanos2date, config.flipTables, config.emptyChar2null, config.long2number);
 			con.auth(auth, function() {
 				socket.removeListener("close", closecb);
 				if (close === false) {
@@ -227,11 +223,11 @@ function connect(params, cb) {
 		}
 	});
 	socket = net.connect.apply(null, socketArgs);
-	if (params.socketTimeout !== undefined) {
-		socket.setTimeout(params.socketTimeout);
+	if (config.socketTimeout !== undefined) {
+		socket.setTimeout(config.socketTimeout);
 	}
-	if (params.socketNoDelay !== undefined) {
-		socket.setNoDelay(params.socketNoDelay);
+	if (config.socketNoDelay !== undefined) {
+		socket.setNoDelay(config.socketNoDelay);
 	}
 	socket.once("error", errorcb);
 }
