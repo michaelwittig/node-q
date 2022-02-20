@@ -8,9 +8,9 @@ describe("deserialization", function() {
     nodeq.connect({host: "localhost", port: 5000}, function(err, c) {
       if (err) { throw err; }
       con = c;
-      c.k("testType: {type x};", function(err, res) {
+      c.k("testType: {type x};", function(err) {
         if (err) { throw err; }
-        c.k("testValue: {x};", function(err, res) {
+        c.k("testValue: {x};", function(err) {
           if (err) { throw err; }
           done();
         });
