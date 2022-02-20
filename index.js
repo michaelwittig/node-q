@@ -15,35 +15,25 @@ class Connection extends events.EventEmitter {
 		this.long2number = long2number;
 		this.nextRequestNo = 1;
 		this.nextResponseNo = 1;
-		const self = this;
-		this.socket.on("end", function() {
-			self.emit("end");
-		});
-		this.socket.on("timeout", function() {
-			self.emit("timeout");
-		});
-		this.socket.on("error", function(err) {
-			self.emit("error", err);
-		});
-		this.socket.on("close", function(had_error) {
-			self.emit("close", had_error);
-		});
+		this.socket.on("end", () => this.emit("end"));
+		this.socket.on("timeout", () => this.emit("timeout"));
+		this.socket.on("error", (err) => this.emit("error", err));
+		this.socket.on("close", (had_error) => this.emit("close", had_error));
 	}
 
 	listen() {
-		const self = this;
 		this.chunk = new Buffer(0);
-		this.socket.on("data", function(inbuffer) {
+		this.socket.on("data", (inbuffer) => {
 			let buffer,
 				length, // current msg length
 				o, // deserialized object
 				err, // deserialize error
 				responseNo;
 
-			if (self.chunk.length !== 0) {
-				buffer = new Buffer(self.chunk.length + inbuffer.length);
-				self.chunk.copy(buffer);
-				inbuffer.copy(buffer, self.chunk.length);
+			if (this.chunk.length !== 0) {
+				buffer = new Buffer(this.chunk.length + inbuffer.length);
+				this.chunk.copy(buffer);
+				inbuffer.copy(buffer, this.chunk.length);
 			} else {
 				buffer = inbuffer;
 			}
@@ -51,23 +41,23 @@ class Connection extends events.EventEmitter {
 				length = buffer.readUInt32LE(4);
 				if (buffer.length >= length) {
 					try {
-						o = libc.deserialize(buffer, self.nanos2date, self.flipTables, self.emptyChar2null, self.long2number);
+						o = libc.deserialize(buffer, this.nanos2date, this.flipTables, this.emptyChar2null, this.long2number);
 						err = undefined;
 					} catch (e) {
 						o = null;
 						err = e;
 					}
 					if (buffer.readUInt8(1) === 2) { // MsgType: 2 := response
-						responseNo = self.nextResponseNo;
-						self.nextResponseNo += 1;
-						self.emit("response:" + responseNo, err, o);
+						responseNo = this.nextResponseNo;
+						this.nextResponseNo += 1;
+						this.emit("response:" + responseNo, err, o);
 					} else {
 						if (err === undefined && Array.isArray(o) && o[0] === "upd") {
-							self.emit(o);
+							this.emit(o);
 						} else {
-							responseNo = self.nextResponseNo;
-							self.nextResponseNo += 1;
-							self.emit("response:" + responseNo, err, o);
+							responseNo = this.nextResponseNo;
+							this.nextResponseNo += 1;
+							this.emit("response:" + responseNo, err, o);
 						}
 					}
 					if (buffer.length > length) {
@@ -80,22 +70,21 @@ class Connection extends events.EventEmitter {
 				}
 			}
 
-			self.chunk = buffer;
+			this.chunk = buffer;
 		});
 	}
 
 	auth(auth, cb) {
 		const n = Buffer.byteLength(auth, "ascii"),
-			b = new Buffer(n + 2),
-			self = this;
+			b = new Buffer(n + 2);
 		b.write(auth, 0, n, "ascii"); // auth (username:password)
 		b.writeUInt8(0x3, n); // capability byte (compression, timestamp, timespan) http://code.kx.com/wiki/Reference/ipcprotocol#Handshake
 		b.writeUInt8(0x0, n+1); // zero terminated
 		this.socket.write(b);
-		this.socket.once("data", function(buffer) {
+		this.socket.once("data", (buffer) => {
 			if (buffer.length === 1) {
 				if (buffer[0] >= 1) { // capability byte must support at least (compression, timestamp, timespan) http://code.kx.com/wiki/Reference/ipcprotocol#Handshake
-					self.listen();
+					this.listen();
 					cb();
 				} else {
 					cb(new Error("Invalid capability byte from server"));
@@ -109,14 +98,13 @@ class Connection extends events.EventEmitter {
 	k(s, cb) {
 		cb = arguments[arguments.length - 1];
 		assert.func(cb, "cb");
-		const self = this;
 		let payload,
 			b,
 			requestNo = this.nextRequestNo;
 		this.nextRequestNo += 1;
 		if (arguments.length === 1) {
 			// Listen for async responses
-			self.once("response:" + requestNo, function(err, o) {
+			this.once("response:" + requestNo, function(err, o) {
 				cb(err, o);
 			});
 		} else {
@@ -128,8 +116,8 @@ class Connection extends events.EventEmitter {
 			}
 			b = libc.serialize(payload);
 			b.writeUInt8(0x1, 1); // MsgType: 1 := sync
-			this.socket.write(b, function() {
-				self.once("response:" + requestNo, function(err, o) {
+			this.socket.write(b, () => {
+				this.once("response:" + requestNo, function(err, o) {
 					cb(err, o);
 				});
 			});
