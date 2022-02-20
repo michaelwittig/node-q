@@ -1,5 +1,5 @@
 "use strict";
-var nodeq = require("../index.js");
+const nodeq = require("../index.js");
 
 describe("connect", function() {
 	describe("old API", function() {

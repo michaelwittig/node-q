@@ -1,5 +1,5 @@
 "use strict";
-var c = require("../lib/c.js"),
+const c = require("../lib/c.js"),
   typed = require("../lib/typed.js"),
   moment = require("moment"),
   assert = require("assert"),

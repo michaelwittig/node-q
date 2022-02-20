@@ -1,10 +1,10 @@
 "use strict";
-var nodeq = require("../index.js"),
+const nodeq = require("../index.js"),
 	assert = require("assert"),
 	os = require("os");
 
 describe("compression", function() {
-	var con;
+	let con;
 	before(function(done) {
 		nodeq.connect({host: os.hostname(), port: 5000}, function(err, c) {
 			if (err) { throw err; }

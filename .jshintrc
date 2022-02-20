@@ -60,5 +60,6 @@
 	"wsh"           : false,
 	"yui"           : false,
 	"globals"       : {},
-	"predef"        : ["describe", "it", "before", "after"]
+	"predef"        : ["describe", "it", "before", "after"],
+	"esversion": 6
 }

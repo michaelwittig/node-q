@@ -1,10 +1,10 @@
 "use strict";
-var nodeq = require("../index.js"),
+const nodeq = require("../index.js"),
 	async = require("async"),
 	assert = require("assert");
 
 describe("subs", function() {
-	var con;
+	let con;
 	before(function(done) {
 		nodeq.connect({host: "localhost", port: 5000}, function(err, c) {
 			if (err) { throw err; }

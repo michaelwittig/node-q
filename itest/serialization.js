@@ -1,9 +1,9 @@
 "use strict";
-var nodeq = require("../index.js"),
+const nodeq = require("../index.js"),
   assert = require("assert");
 
 describe("deserialization", function() {
-  var con;
+  let con;
   before(function(done) {
     nodeq.connect({host: "localhost", port: 5000}, function(err, c) {
       if (err) { throw err; }

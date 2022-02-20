@@ -1,4 +1,4 @@
-var typed = require("../lib/typed.js"),
+const typed = require("../lib/typed.js"),
   assert = require("assert");
 
 describe("typed", function() {

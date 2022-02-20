@@ -1,4 +1,4 @@
-var nodeq = require("../index.js"),
+const nodeq = require("../index.js"),
 	assert = require("assert");
 
 describe("connect", function() {

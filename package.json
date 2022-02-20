@@ -40,6 +40,6 @@
     "url": "https://github.com/michaelwittig/node-q.git"
   },
   "engines": {
-    "node": ">=0.10"
+    "node": ">=12"
   }
 }

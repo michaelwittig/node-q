@@ -1,10 +1,10 @@
 "use strict";
-var nodeq = require("../index.js"),
+const nodeq = require("../index.js"),
 	assert = require("assert");
 
 describe("nanos2date", function() {
 	describe("default", function() {
-		var con;
+		let con;
 		before(function(done) {
 			nodeq.connect({host: "localhost", port: 5000}, function(err, c) {
 				if (err) { throw err; }
@@ -27,7 +27,7 @@ describe("nanos2date", function() {
 		});
 	});
 	describe("true", function() {
-		var con;
+		let con;
 		before(function(done) {
 			nodeq.connect({host: "localhost", port: 5000, nanos2date: true}, function(err, c) {
 				if (err) { throw err; }
@@ -50,7 +50,7 @@ describe("nanos2date", function() {
 		});
 	});
 	describe("false", function() {
-		var con;
+		let con;
 		before(function(done) {
 			nodeq.connect({host: "localhost", port: 5000, nanos2date: false}, function(err, c) {
 				if (err) { throw err; }

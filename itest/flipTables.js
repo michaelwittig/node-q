@@ -1,10 +1,10 @@
 "use strict";
-var nodeq = require("../index.js"),
+const nodeq = require("../index.js"),
   assert = require("assert");
 
 describe("flipTables", function() {
   describe("default", function() {
-    var con;
+    let con;
     before(function(done) {
       nodeq.connect({host: "localhost", port: 5000}, function(err, c) {
         if (err) { throw err; }
@@ -41,7 +41,7 @@ describe("flipTables", function() {
     });
   });
   describe("true", function() {
-    var con;
+    let con;
     before(function(done) {
       nodeq.connect({host: "localhost", port: 5000, flipTables: true}, function(err, c) {
         if (err) { throw err; }
@@ -78,7 +78,7 @@ describe("flipTables", function() {
     });
   });
   describe("false", function() {
-    var con;
+    let con;
     before(function(done) {
       nodeq.connect({host: "localhost", port: 5000, flipTables: false}, function(err, c) {
         if (err) { throw err; }

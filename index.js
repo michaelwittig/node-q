@@ -1,10 +1,10 @@
 "use strict";
-var libc = require("./lib/c.js");
-var net = require("net");
-var events = require("events");
-var util = require("util");
-var assert = require("./lib/assert.js");
-var typed = require("./lib/typed.js");
+const libc = require("./lib/c.js");
+const net = require("net");
+const events = require("events");
+const util = require("util");
+const assert = require("./lib/assert.js");
+const typed = require("./lib/typed.js");
 
 function Connection(socket, nanos2date, flipTables, emptyChar2null, long2number) {
 	events.EventEmitter.call(this);
@@ -15,7 +15,7 @@ function Connection(socket, nanos2date, flipTables, emptyChar2null, long2number)
 	this.long2number = long2number;
 	this.nextRequestNo = 1;
 	this.nextResponseNo = 1;
-	var self = this;
+	const self = this;
 	this.socket.on("end", function() {
 		self.emit("end");
 	});
@@ -31,10 +31,10 @@ function Connection(socket, nanos2date, flipTables, emptyChar2null, long2number)
 }
 util.inherits(Connection, events.EventEmitter);
 Connection.prototype.listen = function() {
-	var self = this;
+	const self = this;
 	this.chunk = new Buffer(0);
 	this.socket.on("data", function(inbuffer) {
-		var buffer,
+		let buffer,
 			length, // current msg length
 			o, // deserialized object
 			err, // deserialize error
@@ -84,7 +84,7 @@ Connection.prototype.listen = function() {
 	});
 };
 Connection.prototype.auth = function(auth, cb) {
-	var n = Buffer.byteLength(auth, "ascii"),
+	const n = Buffer.byteLength(auth, "ascii"),
 		b = new Buffer(n + 2),
 		self = this;
 	b.write(auth, 0, n, "ascii"); // auth (username:password)
@@ -107,8 +107,8 @@ Connection.prototype.auth = function(auth, cb) {
 Connection.prototype.k = function(s, cb) {
 	cb = arguments[arguments.length - 1];
 	assert.func(cb, "cb");
-	var self = this,
-		payload,
+	const self = this;
+	let payload,
 		b,
 		requestNo = this.nextRequestNo;
 	this.nextRequestNo += 1;
@@ -137,7 +137,7 @@ Connection.prototype.ks = function(s, cb) {
 	assert.string(s, "s");
 	cb = arguments[arguments.length - 1];
 	assert.func(cb, "cb");
-	var payload,
+	let payload,
 		b;
 	if (arguments.length === 2) {
 		payload = s;
@@ -160,7 +160,7 @@ Connection.prototype.close = function(cb) {
 };
 
 function connect(params, cb) {
-	var auth,
+	let auth,
 		errorcb,
 		closecb,
 		socket,
@@ -212,7 +212,7 @@ function connect(params, cb) {
 		close = true;
 		cb(new Error("Connection closes (wrong auth?)"));
 	};
-	var socketArgs = [];
+	const socketArgs = [];
 	if (params.unixSocket) {
 		socketArgs.push(params.unixSocket);
 	}
@@ -223,7 +223,7 @@ function connect(params, cb) {
 		socket.removeListener("error", errorcb);
 		if (error === false) {
 			socket.once("close", closecb);
-			var con = new Connection(socket, params.nanos2date, params.flipTables, params.emptyChar2null, params.long2number);
+			const con = new Connection(socket, params.nanos2date, params.flipTables, params.emptyChar2null, params.long2number);
 			con.auth(auth, function() {
 				socket.removeListener("close", closecb);
 				if (close === false) {
