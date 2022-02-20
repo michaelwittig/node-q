@@ -2,162 +2,168 @@
 const libc = require("./lib/c.js");
 const net = require("net");
 const events = require("events");
-const util = require("util");
 const assert = require("./lib/assert.js");
 const typed = require("./lib/typed.js");
 
-function Connection(socket, nanos2date, flipTables, emptyChar2null, long2number) {
-	events.EventEmitter.call(this);
-	this.socket = socket;
-	this.nanos2date = nanos2date;
-	this.flipTables = flipTables;
-	this.emptyChar2null = emptyChar2null;
-	this.long2number = long2number;
-	this.nextRequestNo = 1;
-	this.nextResponseNo = 1;
-	const self = this;
-	this.socket.on("end", function() {
-		self.emit("end");
-	});
-	this.socket.on("timeout", function() {
-		self.emit("timeout");
-	});
-	this.socket.on("error", function(err) {
-		self.emit("error", err);
-	});
-	this.socket.on("close", function(had_error) {
-		self.emit("close", had_error);
-	});
-}
-util.inherits(Connection, events.EventEmitter);
-Connection.prototype.listen = function() {
-	const self = this;
-	this.chunk = new Buffer(0);
-	this.socket.on("data", function(inbuffer) {
-		let buffer,
-			length, // current msg length
-			o, // deserialized object
-			err, // deserialize error
-			responseNo;
+class Connection extends events.EventEmitter {
+	constructor (socket, nanos2date, flipTables, emptyChar2null, long2number) {
+		super();
+		this.socket = socket;
+		this.nanos2date = nanos2date;
+		this.flipTables = flipTables;
+		this.emptyChar2null = emptyChar2null;
+		this.long2number = long2number;
+		this.nextRequestNo = 1;
+		this.nextResponseNo = 1;
+		const self = this;
+		this.socket.on("end", function() {
+			self.emit("end");
+		});
+		this.socket.on("timeout", function() {
+			self.emit("timeout");
+		});
+		this.socket.on("error", function(err) {
+			self.emit("error", err);
+		});
+		this.socket.on("close", function(had_error) {
+			self.emit("close", had_error);
+		});
+	}
 
-		if (self.chunk.length !== 0) {
-			buffer = new Buffer(self.chunk.length + inbuffer.length);
-			self.chunk.copy(buffer);
-			inbuffer.copy(buffer, self.chunk.length);
-		} else {
-			buffer = inbuffer;
-		}
-		while (buffer.length >= 8) {
-			length = buffer.readUInt32LE(4);
-			if (buffer.length >= length) {
-				try {
-					o = libc.deserialize(buffer, self.nanos2date, self.flipTables, self.emptyChar2null, self.long2number);
-					err = undefined;
-				} catch (e) {
-					o = null;
-					err = e;
-				}
-				if (buffer.readUInt8(1) === 2) { // MsgType: 2 := response
-					responseNo = self.nextResponseNo;
-					self.nextResponseNo += 1;
-					self.emit("response:" + responseNo, err, o);
-				} else {
-					if (err === undefined && Array.isArray(o) && o[0] === "upd") {
-						events.EventEmitter.prototype.emit.apply(self, o);
-					} else {
+	listen() {
+		const self = this;
+		this.chunk = new Buffer(0);
+		this.socket.on("data", function(inbuffer) {
+			let buffer,
+				length, // current msg length
+				o, // deserialized object
+				err, // deserialize error
+				responseNo;
+
+			if (self.chunk.length !== 0) {
+				buffer = new Buffer(self.chunk.length + inbuffer.length);
+				self.chunk.copy(buffer);
+				inbuffer.copy(buffer, self.chunk.length);
+			} else {
+				buffer = inbuffer;
+			}
+			while (buffer.length >= 8) {
+				length = buffer.readUInt32LE(4);
+				if (buffer.length >= length) {
+					try {
+						o = libc.deserialize(buffer, self.nanos2date, self.flipTables, self.emptyChar2null, self.long2number);
+						err = undefined;
+					} catch (e) {
+						o = null;
+						err = e;
+					}
+					if (buffer.readUInt8(1) === 2) { // MsgType: 2 := response
 						responseNo = self.nextResponseNo;
 						self.nextResponseNo += 1;
 						self.emit("response:" + responseNo, err, o);
+					} else {
+						if (err === undefined && Array.isArray(o) && o[0] === "upd") {
+							self.emit(o);
+						} else {
+							responseNo = self.nextResponseNo;
+							self.nextResponseNo += 1;
+							self.emit("response:" + responseNo, err, o);
+						}
 					}
-				}
-				if (buffer.length > length) {
-					buffer = buffer.slice(length);
+					if (buffer.length > length) {
+						buffer = buffer.slice(length);
+					} else {
+						buffer = new Buffer(0);
+					}
 				} else {
-					buffer = new Buffer(0);
+					break;
+				}
+			}
+
+			self.chunk = buffer;
+		});
+	}
+
+	auth(auth, cb) {
+		const n = Buffer.byteLength(auth, "ascii"),
+			b = new Buffer(n + 2),
+			self = this;
+		b.write(auth, 0, n, "ascii"); // auth (username:password)
+		b.writeUInt8(0x3, n); // capability byte (compression, timestamp, timespan) http://code.kx.com/wiki/Reference/ipcprotocol#Handshake
+		b.writeUInt8(0x0, n+1); // zero terminated
+		this.socket.write(b);
+		this.socket.once("data", function(buffer) {
+			if (buffer.length === 1) {
+				if (buffer[0] >= 1) { // capability byte must support at least (compression, timestamp, timespan) http://code.kx.com/wiki/Reference/ipcprotocol#Handshake
+					self.listen();
+					cb();
+				} else {
+					cb(new Error("Invalid capability byte from server"));
 				}
 			} else {
-				break;
+				cb(new Error("Invalid auth response from server"));
 			}
-		}
-
-		self.chunk = buffer;
-	});
-};
-Connection.prototype.auth = function(auth, cb) {
-	const n = Buffer.byteLength(auth, "ascii"),
-		b = new Buffer(n + 2),
-		self = this;
-	b.write(auth, 0, n, "ascii"); // auth (username:password)
-	b.writeUInt8(0x3, n); // capability byte (compression, timestamp, timespan) http://code.kx.com/wiki/Reference/ipcprotocol#Handshake
-	b.writeUInt8(0x0, n+1); // zero terminated
-	this.socket.write(b);
-	this.socket.once("data", function(buffer) {
-		if (buffer.length === 1) {
-			if (buffer[0] >= 1) { // capability byte must support at least (compression, timestamp, timespan) http://code.kx.com/wiki/Reference/ipcprotocol#Handshake
-				self.listen();
-				cb();
-			} else {
-				cb(new Error("Invalid capability byte from server"));
-			}
-		} else {
-			cb(new Error("Invalid auth response from server"));
-		}
-	});
-};
-Connection.prototype.k = function(s, cb) {
-	cb = arguments[arguments.length - 1];
-	assert.func(cb, "cb");
-	const self = this;
-	let payload,
-		b,
-		requestNo = this.nextRequestNo;
-	this.nextRequestNo += 1;
-	if (arguments.length === 1) {
-		// Listen for async responses
-		self.once("response:" + requestNo, function(err, o) {
-			cb(err, o);
 		});
-	} else {
+	}
+
+	k(s, cb) {
+		cb = arguments[arguments.length - 1];
+		assert.func(cb, "cb");
+		const self = this;
+		let payload,
+			b,
+			requestNo = this.nextRequestNo;
+		this.nextRequestNo += 1;
+		if (arguments.length === 1) {
+			// Listen for async responses
+			self.once("response:" + requestNo, function(err, o) {
+				cb(err, o);
+			});
+		} else {
+			assert.string(s, "s");
+			if (arguments.length === 2) {
+				payload = s;
+			} else {
+				payload = Array.prototype.slice.call(arguments, 0, arguments.length - 1);
+			}
+			b = libc.serialize(payload);
+			b.writeUInt8(0x1, 1); // MsgType: 1 := sync
+			this.socket.write(b, function() {
+				self.once("response:" + requestNo, function(err, o) {
+					cb(err, o);
+				});
+			});
+		}
+	}
+
+	ks(s, cb) {
 		assert.string(s, "s");
+		cb = arguments[arguments.length - 1];
+		assert.func(cb, "cb");
+		let payload,
+			b;
 		if (arguments.length === 2) {
 			payload = s;
 		} else {
 			payload = Array.prototype.slice.call(arguments, 0, arguments.length - 1);
 		}
 		b = libc.serialize(payload);
-		b.writeUInt8(0x1, 1); // MsgType: 1 := sync
 		this.socket.write(b, function() {
-			self.once("response:" + requestNo, function(err, o) {
-				cb(err, o);
-			});
+			cb();
 		});
 	}
-};
-Connection.prototype.ks = function(s, cb) {
-	assert.string(s, "s");
-	cb = arguments[arguments.length - 1];
-	assert.func(cb, "cb");
-	let payload,
-		b;
-	if (arguments.length === 2) {
-		payload = s;
-	} else {
-		payload = Array.prototype.slice.call(arguments, 0, arguments.length - 1);
+
+	close(cb) {
+		assert.optionalFunc(cb, "cb");
+		this.socket.once("close", function() {
+			if (cb) {
+				cb();
+			}
+		});
+		this.socket.end();
 	}
-	b = libc.serialize(payload);
-	this.socket.write(b, function() {
-		cb();
-	});
-};
-Connection.prototype.close = function(cb) {
-	assert.optionalFunc(cb, "cb");
-	this.socket.once("close", function() {
-		if (cb) {
-			cb();
-		}
-	});
-	this.socket.end();
-};
+}
+
 
 function connect(params, cb) {
 	let auth,
