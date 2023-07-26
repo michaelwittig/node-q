@@ -204,6 +204,10 @@ export declare interface ConnectionParameters {
    * Connect with Unix Domain Sockets rather than TCP
    */
   unixSocket?: string;
+  /**
+   * Should this connection use TLS 
+   */
+  useTLS?: boolean;
 }
 
 /**
