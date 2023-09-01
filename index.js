@@ -222,8 +222,9 @@ function connect(params, cb) {
 		cb(new Error("Connection closes (wrong auth?)"));
 	};
 
+	var socketArgs;
 	if (params.useTLS) {
-		var socketArgs = {};
+		socketArgs = {};
 		if (params.unixSocket) {
 			socketArgs.path = params.unixSocket;
 		} else {
@@ -232,7 +233,7 @@ function connect(params, cb) {
 			socketArgs.ca = params.ca;
 		}
 	} else {
-		var socketArgs = [];
+		socketArgs = [];
 		if (params.unixSocket) {
 			socketArgs.push(params.unixSocket);
 		}
@@ -240,7 +241,7 @@ function connect(params, cb) {
 			socketArgs.push(params.port, params.host);
 		}
 	}
-	let connectionCBfunc = function() {
+	var connectionCBfunc = function() {
 		socket.removeListener("error", errorcb);
 		if (error === false) {
 			socket.once("close", closecb);
