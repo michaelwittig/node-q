@@ -282,6 +282,7 @@ For every primitive type in q, this module exports a method to wrap the JavaScri
 	* `user`: String (optional)
 	* `password`: String (optional)
 	* `useTLS`: Boolean (optional)
+	* `ca`: Buffer | String (e.g. fs.readFileSync('path\\to\\cert.pem')) (optional)
 	* `socketNoDelay` : Boolean (optional, see http://nodejs.org/api/net.html#net_socket_setnodelay_nodelay)
 	* `socketTimeout`: Number (optional, see http://nodejs.org/api/net.html#net_socket_settimeout_timeout_callback)
 	* `nanos2date`: Boolean (optional, default: true)

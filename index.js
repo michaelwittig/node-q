@@ -197,6 +197,7 @@ function connect(params, cb) {
 	assert.optionalNumber(params.port, "params.port");
 	assert.optionalString(params.user, "params.user");
 	assert.optionalString(params.password, "password");
+	assert.optionalObject(params.ca, "params.ca");
 	assert.optionalBool(params.socketNoDelay, "params.socketNoDelay");
 	assert.optionalNumber(params.socketTimeout, "params.socketTimeout");
 	assert.optionalBool(params.nanos2date, "params.nanos2date");
@@ -220,14 +221,27 @@ function connect(params, cb) {
 		close = true;
 		cb(new Error("Connection closes (wrong auth?)"));
 	};
-	var socketArgs = [];
-	if (params.unixSocket) {
-		socketArgs.push(params.unixSocket);
+
+	var socketArgs;
+	if (params.useTLS) {
+		socketArgs = {};
+		if (params.unixSocket) {
+			socketArgs.path = params.unixSocket;
+		} else {
+			socketArgs.port = params.port;
+			socketArgs.host = params.host;
+			socketArgs.ca = params.ca;
+		}
+	} else {
+		socketArgs = [];
+		if (params.unixSocket) {
+			socketArgs.push(params.unixSocket);
+		}
+		else {
+			socketArgs.push(params.port, params.host);
+		}
 	}
-	else {
-		socketArgs.push(params.port, params.host);
-	}
-	socketArgs.push(function() {
+	var connectionCBfunc = function() {
 		socket.removeListener("error", errorcb);
 		if (error === false) {
 			socket.once("close", closecb);
@@ -243,11 +257,12 @@ function connect(params, cb) {
 				}
 			});
 		}
-	});
+	};
 
 	if (params.useTLS) {		
-		socket = tls.connect.apply(null, socketArgs);
+		socket = tls.connect(socketArgs, connectionCBfunc);
 	} else {
+		socketArgs.push(connectionCBfunc);
 		socket = net.connect.apply(null, socketArgs);
 	}
 	
